@@ -1,10 +1,12 @@
 BEGIN;
 
+CREATE TYPE order_status AS ENUM ('recebido', 'em preparação', 'pronto', 'finalizado');
+
 CREATE TABLE IF NOT EXISTS customer
 (
     id bigserial NOT NULL,
     name text NOT NULL,
-    cpf text NOT NULL,
+    cpf varchar(11) NOT NULL,
     email text NOT NULL,
     created_at timestamp with time zone NOT NULL DEFAULT now(),
     PRIMARY KEY (id)
@@ -35,7 +37,7 @@ CREATE TABLE IF NOT EXISTS "order"
     id bigserial NOT NULL,
     customer_id bigint,
     command smallint NOT NULL,
-    order_status text NOT NULL,
+    order_status order_status NOT NULL,
     total_price numeric NOT NULL,
     items jsonb NOT NULL,
     order_updated_at jsonb NOT NULL,
@@ -57,5 +59,13 @@ ALTER TABLE IF EXISTS "order"
     ON UPDATE NO ACTION
     ON DELETE NO ACTION
     NOT VALID;
+
+
+INSERT INTO product_category (name) 
+VALUES 
+  ('lanche'),
+  ('acompanhamento'),
+  ('bebida'),
+  ('sobremesa');
 
 END;
