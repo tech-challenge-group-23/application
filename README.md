@@ -11,16 +11,14 @@ this is the project of the fiap tech challenge
 2. install pnpm on your machine
 
 ```bash
-
 npm i -g pnpm
-
 ```
 
-3. create in the project root a file named .env.dev and add APP_PORT variable
+3. create in the project root a file named .env.dev and add ALL VARIABLES needed to the project
 
 example
 
-```
+```bash
 APP_PORT = 8080
 ```
 
@@ -29,11 +27,18 @@ APP_PORT = 8080
 ```bash
 pnpm install
 ```
+4. if is your first time running the project, run the following command
+
+```bash
+pnpm run migrate:up
+```
+
+this command creates the database and run all database scripts as create table and CRUD operations
 
 4. to run the project, run the following command
 
 ```bash
-    pnpm dev
+pnpm dev
 ```
 
 if everything goes well you will see in the terminal the log running on port: xxxx
