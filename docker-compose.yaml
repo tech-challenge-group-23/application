@@ -1,0 +1,22 @@
+version: '3'
+services:
+  postgres:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin123
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "sh -c 'pg_isready -U postgres -d admin123'"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+volumes:
+  postgres:
+  mondodb:
+  node_modules:

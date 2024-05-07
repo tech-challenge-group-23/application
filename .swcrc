@@ -1,0 +1,24 @@
+{
+    "$schema": "https://json.schemastore.org/swcrc",
+    "module": {
+      "type": "commonjs",
+      "strictMode": true
+    },
+    "jsc": {
+      "target": "esnext",
+      "parser": {
+        "syntax": "typescript",
+        "tsx": false,
+        "decorators": true,
+        "dynamicImport": true
+      },
+      "transform": {
+        "decoratorMetadata": true
+      },
+      "baseUrl": "./",
+      "paths": {
+        "@/*": ["src/*"]
+      }
+    }
+  }
+  
