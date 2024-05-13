@@ -12,10 +12,9 @@ import { provideProductRepository } from "@/adapters/output/postgres/product";
       //validate Product
 
       
-      const aaa = this.pr.save(product)
+      const aaa = await this.pr.save(product)
 
-
-        console.log("test here",aaa)
+        
     }
   };
 
