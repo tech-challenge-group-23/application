@@ -7,9 +7,10 @@ import { Request, Response } from "express";
 
 
 export class CustomerController implements CustomerControllerPort {
-    constructor(private readonly customerService: CustomerService
-    ) {
-        this.customerService = customerService
+    private customerService: CustomerServicePort
+
+    constructor() {
+        this.customerService = provideCustomerService
 
     }
     
@@ -26,12 +27,14 @@ export class CustomerController implements CustomerControllerPort {
             console.log("passou no CustomerController", customer)
             // add aqui a lógica de chamada e direcionamento para a service
             this.customerService.create(customer)
+            res.status(201).send()
            
 
         } catch (error) {
             console.log("tratar erros aqui", error)
+            res.status(400).json({error: error})
         }
     }
 }
 
-export const provideCustomerController = new CustomerController(provideCustomerService)
+export const provideCustomerController = new CustomerController()

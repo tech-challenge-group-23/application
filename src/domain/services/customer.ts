@@ -5,8 +5,10 @@ import { provideCustomerRepository } from "@/adapters/output/postgres/customer";
 
 
 export class CustomerService implements CustomerServicePort {
-    constructor(private readonly customerRepository: CustomerRepositoryPort) {
-        this.customerRepository = customerRepository
+    private customerRepository: CustomerRepositoryPort
+    
+    constructor() {
+        this.customerRepository = provideCustomerRepository
     }
 
     async create(customer: Customer): Promise<void> {
@@ -17,4 +19,4 @@ export class CustomerService implements CustomerServicePort {
     }
 }
 
-export const provideCustomerService = new CustomerService(provideCustomerRepository)
+export const provideCustomerService = new CustomerService()
