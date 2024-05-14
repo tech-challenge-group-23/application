@@ -18,5 +18,4 @@ services:
 
 volumes:
   postgres:
-  mondodb:
   node_modules:
