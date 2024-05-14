@@ -6,9 +6,6 @@ import { productRoutes } from '@/adapters/input/http/routes/product'
 
 const app = express();
 
-app.use(express.json());
-app.use(cors());
-app.use(morgan(':method :url :status :response-time ms - :res[content-length]'));
 
 app.use('/products', productRoutes);
 

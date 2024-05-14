@@ -1,19 +1,14 @@
 import { Product } from '@/domain/entities/product';
 import { ProductRepositoryPort } from '@/ports/postgres/product';
 import { Pool } from 'pg';
+import { connection } from './connection';
 
 export class ProductRepository implements ProductRepositoryPort {
     private pool: Pool;
 
     constructor() {
         // Initialize PostgreSQL connection pool
-        this.pool = new Pool({
-            user: 'postgres',
-            host: 'localhost',
-            database: 'postgres',
-            password: 'admin123',
-            port: 5432 // Default PostgreSQL port
-        });
+        this.pool = connection
     }
 
     async save(product: Product): Promise<number> {
@@ -46,8 +41,8 @@ export class ProductRepository implements ProductRepositoryPort {
             ];
             
             const result = await client.query(query, values);
-            client.release(); // Release the client back to the pool
-            console.log("hmmmmmmmmmmmmmmm quereeeeeee")
+            client.release(); 
+
             return result.rows[0].id;
         } catch (error: any) {
             throw new Error(`Error saving product: ${error.message}`);
@@ -55,4 +50,4 @@ export class ProductRepository implements ProductRepositoryPort {
     }
 }
 
-export const provideProductRepository = new ProductRepository(); // Assuming productRepositoryInstance is an instance of ProductRepository
+export const provideProductRepository = new ProductRepository();
