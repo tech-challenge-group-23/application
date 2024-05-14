@@ -27,9 +27,9 @@ export class ProductController implements ProductControllerPort {
       }
 
       return res.status(400).json(serviceRes)
-      } catch (error) {
+      } catch (error: any) {
         console.log(error)
-        res.status(400).json({ error: error });
+        res.status(500).json({ error: error.message });
       }
     }
   }

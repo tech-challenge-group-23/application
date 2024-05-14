@@ -7,6 +7,6 @@ export const productRoutes = express.Router();
 
 const upload = multer();
 
-productRoutes.post("/", upload.single('file'), (req: Request, res: Response) => {provideProductController.createProduct(req, res)});
+productRoutes.post("/", upload.single('image'), (req: Request, res: Response) => {provideProductController.createProduct(req, res)});
 
 
