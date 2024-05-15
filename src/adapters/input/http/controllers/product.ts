@@ -52,7 +52,6 @@ export class ProductController implements ProductControllerPort {
           return res.sendStatus(404)
         }
 
-
         return res.sendStatus(200)
       } catch (error) {
         console.log(error)
