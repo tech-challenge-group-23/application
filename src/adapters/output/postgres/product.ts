@@ -51,6 +51,33 @@ export class ProductRepository implements ProductRepositoryPort {
             throw new Error(`Error saving product: ${error}`);
         }
     }
+
+    async delete(productId: number): Promise<boolean> {
+        try {
+            const client = await this.pool.connect();
+            const query = `
+            DELETE FROM products
+            WHERE id=$1;
+            `;
+            const values = [
+                productId
+            ];
+            
+            const result = await client.query(query, values);
+            client.release();
+
+            if (result.rowCount === 0) {
+                return false
+            }
+
+            return true;
+        } catch (error) {
+            if (error instanceof Error){
+                throw new Error(`Error deleting product: ${error.message}`);
+            }
+            throw new Error(`Error deleting product: ${error}`);
+        }
+    }
 }
 
 export const provideProductRepository = new ProductRepository();

@@ -28,6 +28,28 @@ import { isInt, isString, validation } from "aux/helpers/validation";
       }
     }
 
+    async delete(productId: number): Promise<ProductServiceResponse> {
+      try {
+        if (isNaN(productId)) {
+          return {isValid: false}
+        }
+  
+        const repoRes = await this.productRepo.delete(productId)
+
+        if (!repoRes) {
+          return {isValid: true, wasFound: false}
+        }
+
+        return {isValid: true, wasFound: true}
+      } catch (error) {
+        console.log(error)
+        if (error instanceof Error) {
+          return {errorMessage: error.message}
+        }
+        throw(error)
+      }
+    }
+
     private validateProduct(product: Product): validation {
       try {
         if (!isInt(product.categoryId) || product.name == null) {

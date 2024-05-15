@@ -7,7 +7,9 @@ export type Product = {
 };
 
 export type ProductServiceResponse = {
-    created: boolean,
-    isValid: boolean,
+    created?: boolean,
+    isValid?: boolean,
+    wasFound?: boolean
     message?: string | unknown,
+    errorMessage?: string | unknown,
 };
