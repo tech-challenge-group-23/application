@@ -44,8 +44,11 @@ export class ProductRepository implements ProductRepositoryPort {
             client.release(); 
 
             return result.rows[0].id;
-        } catch (error: any) {
-            throw new Error(`Error saving product: ${error.message}`);
+        } catch (error) {
+            if (error instanceof Error){
+                throw new Error(`Error saving product: ${error.message}`);
+            }
+            throw new Error(`Error saving product: ${error}`);
         }
     }
 }

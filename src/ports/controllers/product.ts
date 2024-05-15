@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
  
 export interface ProductControllerPort {
-  createProduct(req: Request, res: Response): Promise<any>
+  createProduct(req: Request, res: Response): Promise<Response>
   }
 
   

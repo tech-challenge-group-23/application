@@ -1,13 +1,22 @@
+
 export type validation = {
     isValid: boolean,
     message?: string | unknown,
 };
 
-export function isInt(n: any){
-    return Number(n) === n && n % 1 === 0;
+export function isInt(n: any): boolean{
+    if(isNaN(n)){
+        return false
+    }
+
+    return true
 }
 
 export function isString(value: any): boolean {
-    return typeof value === 'string';
+    if (isNaN(value)){
+        return typeof value === 'string';
+    }
+
+    return false
 }
 

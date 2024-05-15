@@ -11,7 +11,7 @@ export class ProductController implements ProductControllerPort {
       this.ps = provideProductService
     }
   
-    async createProduct(req: Request, res: Response) {
+    async createProduct(req: Request, res: Response): Promise<Response>  {
       try {
         const product: Product = {
           categoryId: req.body.categoryId,
@@ -23,13 +23,16 @@ export class ProductController implements ProductControllerPort {
 
       const serviceRes = await this.ps.create(product)
       if (serviceRes.created) {
-        return res.status(201).send()
+        return res.sendStatus(201)
       }
 
       return res.status(400).json(serviceRes)
-      } catch (error: any) {
+      } catch (error) {
         console.log(error)
-        res.status(500).json({ error: error.message });
+        if (error instanceof Error){
+          res.status(500).json({ error: error.message });
+        }
+        throw(error)
       }
     }
   }

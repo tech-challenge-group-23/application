@@ -3,12 +3,11 @@ import { Product, ProductServiceResponse  } from "../entities/product";
 import { ProductServicePort } from "@/ports/services/product";
 import { provideProductRepository } from "@/adapters/output/postgres/product";
 import { isInt, isString, validation } from "aux/helpers/validation";
-import { isArrayBuffer } from "util/types";
 
   export class ProductService implements ProductServicePort {
-    private pr: ProductRepositoryPort
+    private productRepo: ProductRepositoryPort
     constructor() {
-      this.pr = provideProductRepository
+      this.productRepo = provideProductRepository
     }
 
     async create(product: Product): Promise<ProductServiceResponse> {
@@ -18,17 +17,20 @@ import { isArrayBuffer } from "util/types";
           return {created: false, isValid: productValited.isValid, message: productValited.message}
         } 
   
-        await this.pr.save(product)
+        await this.productRepo.save(product)
         return {created: true, isValid: productValited.isValid}
       } catch (error) {
         console.log(error)
-        return {created: false, isValid: false, message: error}
+        if (error instanceof Error) {
+          return {created: false, isValid: false, message: error.message}
+        }
+        throw(error)
       }
     }
 
     private validateProduct(product: Product): validation {
       try {
-        if (!isInt(Number(product.categoryId)) || product.name == null) {
+        if (!isInt(product.categoryId) || product.name == null) {
           return {
             isValid: false,
             message: "invalid categoryId"
@@ -55,10 +57,13 @@ import { isArrayBuffer } from "util/types";
         
         return {isValid: true}
       } catch (error) {
-        return {isValid: false, message: error}
+        console.log(error)
+        if (error instanceof Error) {
+          return {isValid: false, message: error.message}
+        }
+        throw(error)
       }
     }
   };
-
 
   export const provideProductService = new ProductService(); 
