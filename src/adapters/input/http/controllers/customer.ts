@@ -26,6 +26,10 @@ export class CustomerController implements CustomerControllerPort {
 
             console.log("passou no CustomerController", customer)
             // add aqui a lógica de chamada e direcionamento para a service
+            // add também tratamentos de erros
+            // BAD REQUEST - name, cpf, email
+            // INTERNAL - falha ao salvar user
+            
             this.customerService.create(customer)
             res.status(201).send()
            

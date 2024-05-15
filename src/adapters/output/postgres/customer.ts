@@ -9,6 +9,7 @@ export class CustomerRepository implements CustomerRepositoryPort {
 
     async save(customer: Customer): Promise<Customer> {
         console.log("passou no CustomerRepository", customer)
+        // add script de insert na base customer
         return customer;
     }
 }

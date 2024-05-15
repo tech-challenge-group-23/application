@@ -6,7 +6,7 @@ import { provideCustomerRepository } from "@/adapters/output/postgres/customer";
 
 export class CustomerService implements CustomerServicePort {
     private customerRepository: CustomerRepositoryPort
-    
+
     constructor() {
         this.customerRepository = provideCustomerRepository
     }
@@ -15,6 +15,9 @@ export class CustomerService implements CustomerServicePort {
 
         const result = this.customerRepository.save(customer)
         console.log("passou pelo CustomerService", result)
+        // add regra de validação de CPF: Tamanho 11, formato(11111111111), number, cálculo do cpf
+        // add regra de validação de email: validar formato do e-mail com regex
+        // add regra de validação de caracteres especiais, primeira letra maiuscula e o resto  em cada string, remover espaços extras
         
     }
 }
