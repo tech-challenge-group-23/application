@@ -1,13 +1,13 @@
-import Customer from "@/domain/entities/customer";
-import { CustomerService, provideCustomerService } from "@/domain/services/customer";
-import { CustomerControllerPort } from "@/ports/controllers/customer";
-import { CustomerServicePort } from "@/ports/services/customer";
-import { debug } from "console";
+import Customer from "@/domain/entities/customer-domain";
+import { CustomerService, provideCustomerService } from "@/domain/services/customer-service";
+import { CustomerControllerPort } from "@/ports/controllers/customer-controller-port";
+import { CustomerServicePort } from "@/ports/services/customer-service-port";
 import { Request, Response } from "express";
 
 
 export class CustomerController implements CustomerControllerPort {
     private customerService: CustomerServicePort
+    
 
     constructor() {
         this.customerService = provideCustomerService
@@ -16,12 +16,16 @@ export class CustomerController implements CustomerControllerPort {
     
     
     async createCustomer(req: Request, res: Response): Promise<void> {
-        debug
+        
         try {
+
+            // const date: Date = new Date()
+
             const customer: Customer = {
                 name: req.body.name,
                 cpf: req.body.cpf,
-                email: req.body.email
+                email: req.body.email,
+                // created_at: date // se utilizar type orm, não precisa mandar pois cria por default
             }
 
             console.log("passou no CustomerController", customer)
@@ -30,8 +34,9 @@ export class CustomerController implements CustomerControllerPort {
             // BAD REQUEST - name, cpf, email
             // INTERNAL - falha ao salvar user
             
-            this.customerService.create(customer)
-            res.status(201).send()
+            const response = this.customerService.create(customer)
+    
+            res.status(200).send(response)
            
 
         } catch (error) {
