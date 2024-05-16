@@ -1,4 +1,24 @@
-import {initApp} from '@/adapters/input/http/app'
+import express from 'express';
+import cors from './middlewares/cors';
+import morgan from 'morgan';
+import { APP_PORT } from '../../../env';
+import { productRoutes } from '@/adapters/input/http/routes/product';
+import { customerRoutes } from './routes/customer-route';
 
+const app = express();
+
+
+app.use('/products', productRoutes);
+
+app.use('/customers', customerRoutes);
+
+function initApp() {
+  app.listen(APP_PORT, () => {
+    console.log('running on port: ', APP_PORT);
+  });
+}
 
 initApp();
+
+
+

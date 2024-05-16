@@ -60,7 +60,6 @@ ALTER TABLE IF EXISTS "order"
     ON DELETE NO ACTION
     NOT VALID;
 
-
 INSERT INTO product_category (name) 
 VALUES 
   ('lanche'),
