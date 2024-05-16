@@ -1,6 +1,6 @@
 import { Product } from '@/domain/entities/product';
 import { ProductRepositoryPort } from '@/ports/postgres/product';
-import { Pool } from 'pg';
+import { Pool, QueryResult } from 'pg';
 import { connection } from './connection';
 
 export class ProductRepository implements ProductRepositoryPort {
@@ -76,6 +76,45 @@ export class ProductRepository implements ProductRepositoryPort {
                 throw new Error(`Error deleting product: ${error.message}`);
             }
             throw new Error(`Error deleting product: ${error}`);
+        }
+    }
+
+    async listByCategory(categoryId: number): Promise<Product[]> {
+        try {
+            const client = await this.pool.connect();
+            const query = `
+            SELECT 
+            * 
+            FROM products 
+            WHERE category_id = $1
+            `;
+            const values = [
+                categoryId
+            ];
+            
+            const result = await client.query(query, values);
+            client.release();
+
+            var products: Product[] = []
+            result.rows.forEach(product => {
+              products.push({
+                id: Number(product.id),
+                categoryId: product.category_id,
+                name: product.name,
+                description: product.description,
+                price: Number(product.price),
+                image: product.image,
+                createdAt: product.created_at,
+                updatedAt: product.updated_at
+              })
+            });
+
+            return products;
+        } catch (error) {
+            if (error instanceof Error){
+                throw new Error(`Error listing product: ${error.message}`);
+            }
+            throw new Error(`Error listing product: ${error}`);
         }
     }
 }

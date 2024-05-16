@@ -12,7 +12,9 @@ export class migrations {
     async up() {
         try {
             const client = await this.pool.connect();
-            const query = `BEGIN;
+            const query = `
+            BEGIN;
+
             CREATE TYPE order_status AS ENUM ('recebido', 'em preparação', 'pronto', 'finalizado');
             
             CREATE TABLE IF NOT EXISTS customer
@@ -35,7 +37,8 @@ export class migrations {
                 image bytea,
                 created_at timestamp with time zone NOT NULL DEFAULT now(),
                 updated_at timestamp with time zone NOT NULL DEFAULT now(),
-                PRIMARY KEY (id)
+                PRIMARY KEY (id),
+                CONSTRAINT name_unique UNIQUE (name)
             );
             
             CREATE TABLE IF NOT EXISTS product_category
@@ -80,7 +83,8 @@ export class migrations {
               ('bebida'),
               ('sobremesa');
             
-            END;`
+            END;
+            `
 
             const result = await client.query(query);
             client.release(); 

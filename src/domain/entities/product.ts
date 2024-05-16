@@ -1,15 +1,19 @@
 export type Product = {
-    categoryId: Int16Array,
-    name: string,
-    description: string,
-    price: number,
-    image?: Buffer,
+    id?: number
+    categoryId: Int16Array
+    name: string
+    description?: string
+    price: number
+    image?: Buffer
+    createdAt?: string
+    updatedAt?: string
 };
 
 export type ProductServiceResponse = {
-    created?: boolean,
-    isValid?: boolean,
+    created?: boolean
+    isValid?: boolean
     wasFound?: boolean
-    message?: string | unknown,
-    errorMessage?: string | unknown,
+    products?: Product[]
+    message?: string
+    errorMessage?: string
 };

@@ -22,15 +22,20 @@ export class ProductController implements ProductControllerPort {
         }
 
       const serviceRes = await this.productService.create(product)
-      if (serviceRes.created) {
-        return res.sendStatus(201)
+
+      if (serviceRes.errorMessage !== undefined) {
+        return res.status(500).send(serviceRes)
       }
 
-      return res.status(400).json(serviceRes)
+      if (!serviceRes.created) {
+        return res.status(400).json(serviceRes)
+      }
+
+      return res.sendStatus(201)
       } catch (error) {
         console.log(error)
         if (error instanceof Error){
-          res.status(500).json({ error: error.message });
+          return res.sendStatus(500)
         }
         throw(error)
       }
@@ -56,7 +61,25 @@ export class ProductController implements ProductControllerPort {
       } catch (error) {
         console.log(error)
         if (error instanceof Error){
-          return res.status(500).json({ error: error.message });
+          return res.sendStatus(500)
+        }
+        throw(error)
+      }
+    }
+
+    async listProductsByCategory(req: Request, res: Response): Promise<Response>  {
+      try {
+        const serviceRes = await this.productService.listByCategory(Number(req.params.id))
+
+        if (!serviceRes.isValid) {
+          return res.sendStatus(400)
+        }
+
+        return res.status(200).json(serviceRes.products)
+      } catch (error) {
+        console.log(error)
+        if (error instanceof Error){
+          return res.sendStatus(500)
         }
         throw(error)
       }
