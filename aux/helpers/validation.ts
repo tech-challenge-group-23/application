@@ -1,7 +1,8 @@
 
 export type validation = {
-    isValid: boolean,
-    message?: string | unknown,
+    isValid?: boolean
+    message?: string
+    errorMessage?: string
 };
 
 export function isInt(n: any): boolean{
@@ -19,4 +20,14 @@ export function isString(value: any): boolean {
 
     return false
 }
+
+export function isNull(n: unknown): boolean{
+    if(n == null){
+        return false
+    }
+
+    return true
+}
+
+
 

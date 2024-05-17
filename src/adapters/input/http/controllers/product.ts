@@ -5,10 +5,10 @@ import { Request, Response } from 'express';
 import { provideProductService } from "@/domain/services/product"
 
 export class ProductController implements ProductControllerPort {
-    private ps: ProductServicePort
+    private productService: ProductServicePort
     
     constructor() {
-      this.ps = provideProductService
+      this.productService = provideProductService
     }
   
     async createProduct(req: Request, res: Response): Promise<Response>  {
@@ -21,22 +21,70 @@ export class ProductController implements ProductControllerPort {
           image: req.file?.buffer,
         }
 
-      const serviceRes = await this.ps.create(product)
-      if (serviceRes.created) {
-        return res.sendStatus(201)
+      const serviceRes = await this.productService.create(product)
+
+      if (serviceRes.errorMessage !== undefined) {
+        return res.status(500).send(serviceRes)
       }
 
-      return res.status(400).json(serviceRes)
+      if (!serviceRes.created) {
+        return res.status(400).json(serviceRes)
+      }
+
+      return res.sendStatus(201)
       } catch (error) {
         console.log(error)
         if (error instanceof Error){
-          res.status(500).json({ error: error.message });
+          return res.sendStatus(500)
+        }
+        throw(error)
+      }
+    }
+
+    async deleteProduct(req: Request, res: Response): Promise<Response>  {
+      try {
+        const serviceRes = await this.productService.delete(Number(req.params.id))
+
+        if (serviceRes.errorMessage !== undefined){
+          return res.status(500).send(serviceRes)
+        }
+
+        if (!serviceRes.isValid) {
+          return res.sendStatus(400)
+        }
+
+        if (!serviceRes.wasFound){
+          return res.sendStatus(404)
+        }
+
+        return res.sendStatus(200)
+      } catch (error) {
+        console.log(error)
+        if (error instanceof Error){
+          return res.sendStatus(500)
+        }
+        throw(error)
+      }
+    }
+
+    async listProductsByCategory(req: Request, res: Response): Promise<Response>  {
+      try {
+        const serviceRes = await this.productService.listByCategory(Number(req.params.id))
+
+        if (!serviceRes.isValid) {
+          return res.sendStatus(400)
+        }
+
+        return res.status(200).json(serviceRes.products)
+      } catch (error) {
+        console.log(error)
+        if (error instanceof Error){
+          return res.sendStatus(500)
         }
         throw(error)
       }
     }
   }
-
 
   export const provideProductController = new ProductController();
 

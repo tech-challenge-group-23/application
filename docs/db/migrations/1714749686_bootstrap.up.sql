@@ -22,7 +22,8 @@ CREATE TABLE IF NOT EXISTS products
     image bytea,
     created_at timestamp with time zone NOT NULL DEFAULT now(),
     updated_at timestamp with time zone NOT NULL DEFAULT now(),
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    CONSTRAINT name_unique UNIQUE (name)
 );
 
 CREATE TABLE IF NOT EXISTS product_category

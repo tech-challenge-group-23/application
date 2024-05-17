@@ -13,7 +13,6 @@
     "dev": "node --env-file=.env.dev -r \"@swc/register\" \"src/adapters/input/http/index.ts\"",
     "build": "npm run clean && npm run types && swc src -d dist",
     "migrate:up": "node --env-file=.env.dev node_modules/migrate/bin/migrate up --compiler=\"ts:@swc/register\"",
-    "migrate:test": "node --env-file=.env.dev -r \"@swc/register\" \"migrations/000002-database.ts\"",
     "migrate:down": "node --env-file=.env.dev node_modules/migrate/bin/migrate down --compiler=\"ts:@swc/register\""
   },
   "keywords": [],
