@@ -1,4 +1,4 @@
-import { Customer }  from "@/domain/entities/customer-entity";
+import { Customer } from "@/domain/entities/customer-entity";
 import { provideCustomerService } from "@/domain/services/customer-service";
 import { CustomerControllerPort } from "@/ports/controllers/customer-controller-port";
 import { CustomerServicePort } from "@/ports/services/customer-service-port";
@@ -13,9 +13,11 @@ export class CustomerController implements CustomerControllerPort {
         this.customerService = provideCustomerService
 
     }
-    
+
+    // TO DO: validação de nome: (name) -> validar caracteres especiais, primeira letra maiuscula e o resto minúscula em cada string, remover espaços extras, obrigatório;
+
     async createCustomer(req: Request, res: Response): Promise<Response> {
-        
+
         const customer: Customer = {
             name: req.body.name,
             cpf: req.body.cpf,
@@ -24,20 +26,17 @@ export class CustomerController implements CustomerControllerPort {
 
         const validation = validationRequest(customer)
 
-        if(validation === true) {
-            try {                
+        if (validation !== true) {
+            return res.status(400).send(validation)
+        } else {
+            try {
                 const response = await this.customerService.create(customer)
-    
+
                 return res.status(201).send(response)
-    
+
             } catch (error) {
-                console.log("tratar erros aqui", error)
                 return res.status(500).send(error)
             }
-        } else {
-            console.log("não passou na validação")
-            return res.status(400).send(validation)
-           
         }
     }
 
@@ -45,19 +44,21 @@ export class CustomerController implements CustomerControllerPort {
         const cpf = req.params.cpf
         const validation = validationCpf(cpf)
 
-        if (validation === true) {
-            try {
-              const response = await this.customerService.searchByCpf(cpf)
-              return res.status(200).send(response)
-            } catch(error) {
-                console.log("tratar erros aqui", error)
-                    return res.status(500).send(error)
-            }
-
-        } else {
+        if(validation !== true) {
             return res.status(400).send(validation)
-        }
+        } else {
+            try {
+                const response = await this.customerService.searchByCpf(cpf)
 
+                return res.status(200).send(response)
+
+            } catch (error) {
+                if (error !== undefined) {
+                    return res.status(400).send(error)
+                }
+                return res.status(500).send(error)
+            }
+        }
     }
 }
 

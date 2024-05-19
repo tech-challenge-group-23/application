@@ -45,24 +45,18 @@ export class CustomerRepository implements CustomerRepositoryPort {
             .select("customer")
             .from(Customer, "customer")
             .where("customer.cpf = :cpf", {cpf: paramCpf})
-            .getOneOrFail()
+            .getOne()
     
-            // const result = {
-            //     id: searchCpf?.id,
-            //     name: searchCpf.name,
-            //     cpf: searchCpf.cpf,
-            //     email: searchCpf.email,
-            //     createdAt: searchCpf.created_at
-    
-            // }
-            console.log(searchCpf)
-    
-            return searchCpf
-            
+            if(searchCpf?.cpf) {
+                return searchCpf
+            } else {
+                throw new Error(`CPF ${paramCpf} não cadastrado na base.`)
+            }
+
         } catch(error) {
             if(error instanceof Error)
-                throw new Error(`Erro ao incluir cliente: ${error.message}`)
-            throw new Error(`Erro ao incluir cliente: ${error}`)
+                throw new Error(`Erro ao buscar cpf: ${error.message}`)
+            throw new Error(`Erro ao buscar cpf: ${error}`)
         }
     }
 }
