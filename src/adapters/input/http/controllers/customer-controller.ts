@@ -15,6 +15,7 @@ export class CustomerController implements CustomerControllerPort {
     }
 
     // TO DO: validação de nome: (name) -> validar caracteres especiais, primeira letra maiuscula e o resto minúscula em cada string, remover espaços extras, obrigatório;
+    // TO DO: add rotas customer no swagger
 
     async createCustomer(req: Request, res: Response): Promise<Response> {
 
