@@ -1,5 +1,7 @@
 BEGIN;
 
+CREATE DATABASE IF NOT EXISTS tech-challenge
+
 CREATE TYPE order_status AS ENUM ('recebido', 'em preparação', 'pronto', 'finalizado');
 
 CREATE TABLE IF NOT EXISTS customer
