@@ -1,57 +1,40 @@
-import Customer from "@/domain/entities/customer-domain";
+import { Customer } from "@/domain/entities/customer-entity";
 import { CustomerRepositoryPort } from "@/ports/postgres/customer-repository-port";
-import { Pool } from "pg";
-import { connection } from "./connection";
+import { AppDataSource } from "..";
 
 
 export class CustomerRepository implements CustomerRepositoryPort {
+    // constructor() { }
 
-    private pool: Pool
-    // private date: Date = new Date()
+    async save(customer: Customer): Promise<Customer> {
 
-    constructor() {
-        this.pool = connection
-        console.log(this.pool)
-    }
-
-    async save(customer: Customer): Promise<any> {
-        // const client = await this.pool.connect();
         try {
-            const query = `
-                INSERT INTO customer
-                (
-                    name,
-                    cpf,
-                    email,
-                    created_at
-                )
-                VALUES
-                (
-                    ${customer.name},
-                    ${customer.cpf},
-                    ${customer.email}
-                )
-            `
-
-            const client = await this.pool.connect();
-
-            console.log("query", query)
-
-            const response = await client.query(query)
-
-            // console.log("passou no CustomerRepository", customer)
-            console.log("chegou no response", response.rows[0])
-
-            client.release();
-            return response.rows[0]
-
-
+            const insertCustomer = await AppDataSource
+            .createQueryBuilder()
+            .insert()
+            .into(Customer)
+            .values([
+                { name: customer.name, cpf: customer.cpf, email: customer.email, createdAt: new Date() }
+            ])
+            .returning(["id", "name", "cpf", "email", "createdAt"])
+            .execute()
+    
+            const result = {
+                id: insertCustomer.raw[0].id,
+                name: insertCustomer.raw[0].name,
+                cpf: insertCustomer.raw[0].cpf,
+                email: insertCustomer.raw[0].email,
+                createdAt: insertCustomer.raw[0].created_at
+            }
+    
+            return result
+            
         } catch(error) {
-            console.log(error)
-
+            if(error instanceof Error)
+                throw new Error(`Erro ao incluir cliente: ${error.message}`)
+            throw new Error(`Erro ao incluir cliente: ${error}`)
         }
-        // // add script de insert na base customer
-        // return customer;
+
     }
 }
 

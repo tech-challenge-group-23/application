@@ -1,47 +1,47 @@
-import Customer from "@/domain/entities/customer-domain";
-import { CustomerService, provideCustomerService } from "@/domain/services/customer-service";
+import { Customer }  from "@/domain/entities/customer-entity";
+import { provideCustomerService } from "@/domain/services/customer-service";
 import { CustomerControllerPort } from "@/ports/controllers/customer-controller-port";
 import { CustomerServicePort } from "@/ports/services/customer-service-port";
+import { validationRequest } from "aux/helpers/customer-validations/request-validation";
 import { Request, Response } from "express";
 
 
 export class CustomerController implements CustomerControllerPort {
     private customerService: CustomerServicePort
-    
 
     constructor() {
         this.customerService = provideCustomerService
 
     }
     
-    
-    async createCustomer(req: Request, res: Response): Promise<void> {
+    async createCustomer(req: Request, res: Response): Promise<Response> {
         
-        try {
+        const customer: Customer = {
+            name: req.body.name,
+            cpf: req.body.cpf,
+            email: req.body.email,
+        }
 
-            // const date: Date = new Date()
+        const validation = validationRequest(customer)
 
-            const customer: Customer = {
-                name: req.body.name,
-                cpf: req.body.cpf,
-                email: req.body.email,
-                // created_at: date // se utilizar type orm, não precisa mandar pois cria por default
-            }
-
-            console.log("passou no CustomerController", customer)
-            // add aqui a lógica de chamada e direcionamento para a service
-            // add também tratamentos de erros
-            // BAD REQUEST - name, cpf, email
-            // INTERNAL - falha ao salvar user
-            
-            const response = this.customerService.create(customer)
+        if(validation === true) {
+            try {                
+                const response = await this.customerService.create(customer)
     
-            res.status(200).send(response)
+                console.log("controler", response)
+    
+                return res.status(201).send(response)
+               
+    
+            } catch (error) {
+                console.log("tratar erros aqui", error)
+                return res.status(400).send(error)
+                // res.status(400).json({error: error})
+            }
+        } else {
+            console.log("não passou na validação")
+            return res.status(400).send(validation)
            
-
-        } catch (error) {
-            console.log("tratar erros aqui", error)
-            res.status(400).json({error: error})
         }
     }
 }
