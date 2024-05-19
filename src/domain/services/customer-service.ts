@@ -15,9 +15,6 @@ export class CustomerService implements CustomerServicePort {
 
         try{
             const result = await this.customerRepository.save(customer)
-            // console.log("trouxe result na service", result)
-            // add regra de validação de CPF: Tamanho 11, formato(11111111111), number, cálculo do cpf
-            // add regra de validação de email: validar formato do e-mail com regex
             // add regra de validação de caracteres especiais, primeira letra maiuscula e o resto  em cada string, remover espaços extras
             return result;
 
@@ -27,6 +24,19 @@ export class CustomerService implements CustomerServicePort {
             throw new Error(`Erro ao incluir cliente: ${error}`)
         }
         
+    }
+
+    async searchByCpf(cpf: string): Promise<Customer> {
+        try{
+            const result = await this.customerRepository.searchByCpf(cpf)
+            return result
+        } catch(error) {
+            if(error instanceof Error)
+                throw new Error(`Erro ao buscar cpf: ${error.message}`)
+            throw new Error(`Erro ao buscar cpf: ${error}`)
+        }
+
+
     }
 }
 

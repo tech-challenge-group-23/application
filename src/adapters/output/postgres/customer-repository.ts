@@ -14,7 +14,7 @@ export class CustomerRepository implements CustomerRepositoryPort {
             .insert()
             .into(Customer)
             .values([
-                { name: customer.name, cpf: customer.cpf, email: customer.email, createdAt: new Date() }
+                { name: customer.name, cpf: customer.cpf, email: customer.email, created_at: new Date() }
             ])
             .returning(["id", "name", "cpf", "email", "createdAt"])
             .execute()
@@ -35,6 +35,35 @@ export class CustomerRepository implements CustomerRepositoryPort {
             throw new Error(`Erro ao incluir cliente: ${error}`)
         }
 
+    }
+
+    async searchByCpf(paramCpf: string): Promise<Customer> {
+        try{
+
+            const searchCpf = await AppDataSource
+            .createQueryBuilder()
+            .select("customer")
+            .from(Customer, "customer")
+            .where("customer.cpf = :cpf", {cpf: paramCpf})
+            .getOneOrFail()
+    
+            // const result = {
+            //     id: searchCpf?.id,
+            //     name: searchCpf.name,
+            //     cpf: searchCpf.cpf,
+            //     email: searchCpf.email,
+            //     createdAt: searchCpf.created_at
+    
+            // }
+            console.log(searchCpf)
+    
+            return searchCpf
+            
+        } catch(error) {
+            if(error instanceof Error)
+                throw new Error(`Erro ao incluir cliente: ${error.message}`)
+            throw new Error(`Erro ao incluir cliente: ${error}`)
+        }
     }
 }
 

@@ -17,7 +17,7 @@ export class Customer {
     email: string;
 
     @Column("timestamp with time zone")
-    createdAt?: Date
+    created_at?: Date
 
     constructor(name: string, cpf: string, email: string) {
         // this.id = id;

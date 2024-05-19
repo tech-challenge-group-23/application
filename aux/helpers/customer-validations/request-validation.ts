@@ -13,21 +13,37 @@ export function validationRequest(body: Customer) {
     if(!body.cpf) {
         return `Campo CPF é obrigatório! Insira um CPF válido e tente novamente.`
     } else {
+        // validationCpf(body.cpf) 
         const isValid = validateCPF(body.cpf)
         if(isValid ==! true) {
-            return `Número de CPF inválido! Insira um novo CPF e tente novamente.`
+            return `Número de CPF '${body.cpf}' inválido! Insira um novo CPF e tente novamente.`
         }
     }
 
     if(!body.email) {
         return `Campo email é obrigatório! Tente novamente.`
     } else {
-        const teste = EmailValidator.validate(body.email)
-        if(teste ==! true)
-            return `Email inválido! Insira um email válido e tente novamente.`
+        // validationEmail(body.email)
+        const isValid = EmailValidator.validate(body.email)
+        if(isValid ==! true)
+            return `Email '${body.email}' inválido! Insira um email válido e tente novamente.`
     }
 
     return true
+}
+
+export function validationCpf(cpf: string) {
+    const isValid = validateCPF(cpf)
+    if(isValid ==! true) {
+        return `Número de CPF '${cpf}' inválido! Insira um novo CPF e tente novamente.`
+    }
+    return true
+}
+
+export function validationEmail(email: string) {
+    const isValid = EmailValidator.validate(email)
+        if(isValid ==! true)
+            return `Email ${email} inválido! Insira um email válido e tente novamente.`
 }
 
 
