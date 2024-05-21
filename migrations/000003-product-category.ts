@@ -16,13 +16,6 @@ export async function up() {
       PRIMARY KEY (id)
   );`);
 
-  await client.query(`CREATE TABLE IF NOT EXISTS product_category
-  (
-      id smallserial NOT NULL,
-      name text NOT NULL,
-      PRIMARY KEY (id)
-  );`);
-
   await client.query(`INSERT INTO product_category (name)
   VALUES
     ('lanche'),
