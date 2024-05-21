@@ -15,7 +15,7 @@ export class CustomerService implements CustomerServicePort {
 
         try{
             const result = await this.customerRepository.save(customer)
-            // add regra de validação de caracteres especiais, primeira letra maiuscula e o resto  em cada string, remover espaços extras
+
             return result;
 
         } catch(error) {

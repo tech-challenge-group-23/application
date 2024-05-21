@@ -2,7 +2,7 @@ import { Customer } from "@/domain/entities/customer-entity";
 import { provideCustomerService } from "@/domain/services/customer-service";
 import { CustomerControllerPort } from "@/ports/controllers/customer-controller-port";
 import { CustomerServicePort } from "@/ports/services/customer-service-port";
-import { validationCpf, validationRequest } from "aux/helpers/customer-validations/request-validation";
+import { validateCustomerName, validationCpf, validationRequest } from "aux/helpers/customer-validations/request-validation";
 import { Request, Response } from "express";
 
 
@@ -14,8 +14,10 @@ export class CustomerController implements CustomerControllerPort {
 
     }
 
-    // TO DO: validação de nome: (name) -> validar caracteres especiais, primeira letra maiuscula e o resto minúscula em cada string, remover espaços extras, obrigatório;
+    // DONE: validação de nome: (name) -> validar caracteres especiais, primeira letra maiuscula e o resto minúscula em cada string, remover espaços extras, obrigatório;
     // TO DO: add rotas customer no swagger
+    // TO DO: add rota customer/getAll()???
+    // TO DO: add rota customer/getById()???
 
     async createCustomer(req: Request, res: Response): Promise<Response> {
 
@@ -30,7 +32,9 @@ export class CustomerController implements CustomerControllerPort {
         if (validation !== true) {
             return res.status(400).send(validation)
         } else {
+
             try {
+                customer.name = validateCustomerName(customer.name)
                 const response = await this.customerService.create(customer)
 
                 return res.status(201).send(response)
@@ -45,7 +49,7 @@ export class CustomerController implements CustomerControllerPort {
         const cpf = req.params.cpf
         const validation = validationCpf(cpf)
 
-        if(validation !== true) {
+        if (validation !== true) {
             return res.status(400).send(validation)
         } else {
             try {

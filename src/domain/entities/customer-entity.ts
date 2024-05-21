@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn,   } from "typeorm"
+import { Entity, Column, PrimaryGeneratedColumn, } from "typeorm"
 
 @Entity()
 export class Customer {
@@ -20,11 +20,9 @@ export class Customer {
     created_at?: Date
 
     constructor(name: string, cpf: string, email: string) {
-        // this.id = id;
         this.name = name;
         this.cpf = cpf;
         this.email = email;
-        // this.createdAt = createdAt
     }
 
 }
