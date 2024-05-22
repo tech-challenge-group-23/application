@@ -11,11 +11,11 @@ export class CustomerController implements CustomerControllerPort {
 
     constructor() {
         this.customerService = provideCustomerService
-
     }
 
     // DONE: validação de nome: (name) -> validar caracteres especiais, primeira letra maiuscula e o resto minúscula em cada string, remover espaços extras, obrigatório;
     // TO DO: add rotas customer no swagger
+    // TO DO: remover created_at: new Date() do repository: dá erro "null value in column "created_at" of relation "customer" violates not-null constraint"
     // TO DO: add rota customer/getAll()???
     // TO DO: add rota customer/getById()???
 
