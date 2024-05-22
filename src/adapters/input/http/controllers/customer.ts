@@ -1,8 +1,8 @@
-import { Customer } from "@/domain/entities/customer-entity";
-import { provideCustomerService } from "@/domain/services/customer-service";
-import { CustomerControllerPort } from "@/ports/controllers/customer-controller-port";
-import { CustomerServicePort } from "@/ports/services/customer-service-port";
-import { validateCustomerName, validationCpf, validationRequest } from "aux/helpers/customer-validations/request-validation";
+import { Customer } from "@/domain/entities/customer";
+import { provideCustomerService } from "@/domain/services/customer";
+import { CustomerControllerPort } from "@/ports/controllers/customer";
+import { CustomerServicePort } from "@/ports/services/customer";
+import { validateCustomerName, validationCpf, validationCustomerRequest } from "@/domain/services/customer-validations/request-validation";
 import { Request, Response } from "express";
 
 
@@ -27,7 +27,7 @@ export class CustomerController implements CustomerControllerPort {
             email: req.body.email,
         }
 
-        const validation = validationRequest(customer)
+        const validation = validationCustomerRequest(customer)
 
         if (validation !== true) {
             return res.status(400).send(validation)

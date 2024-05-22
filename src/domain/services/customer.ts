@@ -1,7 +1,7 @@
-import { CustomerRepositoryPort } from "@/ports/postgres/customer-repository-port";
-import { CustomerServicePort } from "@/ports/services/customer-service-port";
-import { Customer } from "../entities/customer-entity";
-import { provideCustomerRepository } from "@/adapters/output/postgres/customer-repository";
+import { CustomerRepositoryPort } from "@/ports/postgres/customer";
+import { CustomerServicePort } from "@/ports/services/customer";
+import { Customer } from "../entities/customer";
+import { provideCustomerRepository } from "@/adapters/output/postgres/customer";
 
 
 export class CustomerService implements CustomerServicePort {
@@ -20,10 +20,10 @@ export class CustomerService implements CustomerServicePort {
 
         } catch(error) {
             if(error instanceof Error)
-                throw new Error(`Erro ao incluir cliente: ${error.message}`)
-            throw new Error(`Erro ao incluir cliente: ${error}`)
+                throw new Error(`Error adding customer: ${error.message}`)
+            throw new Error(`Error adding customer: ${error}`)
         }
-        
+
     }
 
     async searchByCpf(cpf: string): Promise<Customer> {
@@ -32,8 +32,8 @@ export class CustomerService implements CustomerServicePort {
             return result
         } catch(error) {
             if(error instanceof Error)
-                throw new Error(`Erro ao buscar cpf: ${error.message}`)
-            throw new Error(`Erro ao buscar cpf: ${error}`)
+                throw new Error(`Error when searching for cpf: ${error.message}`)
+            throw new Error(`Error when searching for cpf: ${error}`)
         }
 
 

@@ -1,5 +1,5 @@
-import { Customer } from "@/domain/entities/customer-entity";
-import { CustomerRepositoryPort } from "@/ports/postgres/customer-repository-port";
+import { Customer } from "@/domain/entities/customer";
+import { CustomerRepositoryPort } from "@/ports/postgres/customer";
 import { AppDataSource } from "..";
 
 
@@ -30,8 +30,8 @@ export class CustomerRepository implements CustomerRepositoryPort {
 
         } catch(error) {
             if(error instanceof Error)
-                throw new Error(`Erro ao incluir cliente: ${error.message}`)
-            throw new Error(`Erro ao incluir cliente: ${error}`)
+                throw new Error(`Error adding customer: ${error.message}`)
+            throw new Error(`Error adding customer: ${error}`)
         }
 
     }
@@ -49,13 +49,13 @@ export class CustomerRepository implements CustomerRepositoryPort {
             if(searchCpf?.cpf) {
                 return searchCpf
             } else {
-                throw new Error(`CPF ${paramCpf} não cadastrado na base.`)
+                throw new Error(`CPF ${paramCpf} not registered in the base.`)
             }
 
         } catch(error) {
             if(error instanceof Error)
-                throw new Error(`Erro ao buscar cpf: ${error.message}`)
-            throw new Error(`Erro ao buscar cpf: ${error}`)
+                throw new Error(`Error when searching for cpf: ${error.message}`)
+            throw new Error(`Error when searching for cpf: ${error}`)
         }
     }
 }

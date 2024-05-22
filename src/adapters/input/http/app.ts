@@ -3,7 +3,7 @@ import cors from './middlewares/cors';
 import morgan from 'morgan';
 import { APP_PORT } from '../../../env';
 import { productRoutes } from '@/adapters/input/http/routes/product'
-import { customerRoutes } from './routes/customer-route';
+import { customerRoutes } from './routes/customer';
 
 const app = express();
 

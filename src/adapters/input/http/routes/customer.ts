@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { provideCustomerController } from '../controllers/customer-controller';
+import { provideCustomerController } from '../controllers/customer';
 
 export const customerRoutes = express.Router();
 
