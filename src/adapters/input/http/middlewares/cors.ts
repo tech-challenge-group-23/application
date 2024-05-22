@@ -4,6 +4,7 @@ export default function cors() {
   return (req: Request, res: Response, next: NextFunction) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Content-Type', '*');
+    res.header('Content-Type', 'application/json');
     res.header(
       'Access-Control-Allow-Headers',
       'Authorization, Origin, X-Requested-With, Content-Type, Accept',
