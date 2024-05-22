@@ -28,6 +28,3 @@ export function isNull(n: unknown): boolean{
 
     return true
 }
-
-
-
