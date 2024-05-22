@@ -24,7 +24,3 @@ export function initApp() {
 module.exports = {
   initApp: initApp()
 };
-
-
-
-// export default initApp()

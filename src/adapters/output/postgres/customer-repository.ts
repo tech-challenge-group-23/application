@@ -4,7 +4,6 @@ import { AppDataSource } from "..";
 
 
 export class CustomerRepository implements CustomerRepositoryPort {
-    // constructor() { }
 
     async save(customer: Customer): Promise<Customer> {
 
@@ -18,7 +17,7 @@ export class CustomerRepository implements CustomerRepositoryPort {
             ])
             .returning(["id", "name", "cpf", "email", "createdAt"])
             .execute()
-    
+
             const result = {
                 id: insertCustomer.raw[0].id,
                 name: insertCustomer.raw[0].name,
@@ -26,9 +25,9 @@ export class CustomerRepository implements CustomerRepositoryPort {
                 email: insertCustomer.raw[0].email,
                 createdAt: insertCustomer.raw[0].created_at
             }
-    
+
             return result
-            
+
         } catch(error) {
             if(error instanceof Error)
                 throw new Error(`Erro ao incluir cliente: ${error.message}`)
@@ -46,7 +45,7 @@ export class CustomerRepository implements CustomerRepositoryPort {
             .from(Customer, "customer")
             .where("customer.cpf = :cpf", {cpf: paramCpf})
             .getOne()
-    
+
             if(searchCpf?.cpf) {
                 return searchCpf
             } else {
