@@ -5,7 +5,6 @@ import { OrderServicePort } from "@/ports/services/order";
 import { validateOrderRequest } from "@/domain/services/request-validations/order";
 import { Request, Response } from "express";
 
-
 export class OrderController implements OrderControllerPort {
     private orderService: OrderServicePort
 
@@ -20,8 +19,12 @@ export class OrderController implements OrderControllerPort {
 
         if (validationErrors.length > 0) {
             return res.status(400).send(validationErrors)
-        } else {
+        }
 
+        //TODO add searchById em customer para validar se o customer o pedido é valido
+        //const customer = await this.customerService.searchById(req.body.customer_id);
+
+        else {
           const response = await this.orderService.create(orderRequest)
 
           return res.status(201).send(response)

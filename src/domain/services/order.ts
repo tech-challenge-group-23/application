@@ -21,8 +21,8 @@ export class OrderService implements OrderServicePort {
 
       } catch(error) {
           if(error instanceof Error)
-              throw new Error(`Erro ao incluir cliente: ${error.message}`)
-          throw new Error(`Erro ao incluir cliente: ${error}`)
+              throw new Error(`An error occurred when creating a new order. Details: ${error.message}`)
+          throw new Error(`An error occurred when creating a new order. Details: ${error}`)
       }
   }
 

@@ -25,8 +25,8 @@ export class OrderRepository implements OrderRepositoryPort {
 
     } catch(error) {
       if(error instanceof Error)
-        throw new Error(`Erro ao incluir pedido: ${error.message}`)
-    throw new Error(`Erro ao incluir pedido: ${error}`)
+        throw new Error(`Cannot insert the order. Details: ${error.message}`)
+    throw new Error(`Cannot insert the order. Details: ${error}`)
     }
   }
 

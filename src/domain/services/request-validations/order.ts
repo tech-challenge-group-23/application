@@ -3,7 +3,7 @@ import { OrderRequest, OrderStatus } from "@/domain/entities/order"
 export function validateOrderRequest(request: OrderRequest): string[] {
   const errors: string[] = [];
 
-  if(!isOrderStatus(request.orderStatus ) || request.orderStatus.trim() === ''){
+  if(!isOrderStatus(request.orderStatus )){
     errors.push ('invalid value for order_status');
   }
 
@@ -30,6 +30,6 @@ export function validateOrderRequest(request: OrderRequest): string[] {
   return errors
 }
 
-function isOrderStatus(status: string) {
-  return status in OrderStatus;
+function isOrderStatus(status: string): status is OrderStatus {
+  return Object.values(OrderStatus).includes(status as OrderStatus);
 }

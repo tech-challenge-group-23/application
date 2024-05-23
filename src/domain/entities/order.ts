@@ -57,10 +57,10 @@ export class OrderDB {
   @Column('decimal', { precision: 10, scale: 2 })
   totalPrice: number;
 
-  @Column()
+  @Column("jsonb", {array: true})
   items: OrderItem[];
 
-  @Column()
+  @Column("jsonb", {array: true})
   orderUpdatedAt: OrderUpdateInfo[];
 
   @Column()
