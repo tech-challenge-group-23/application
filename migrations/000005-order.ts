@@ -42,8 +42,8 @@ export async function down() {
   await client.query(`DO
   $$
   BEGIN
-    IF EXISTS (SELECT * FROM pg_type typ WHERE typ.typname = '"order_status"') THEN
-      DROP TYPE "order_status";
+    IF EXISTS (SELECT * FROM pg_type typ WHERE typ.typname = 'order_status') THEN
+      DROP TYPE "order_status" CASCADE;
     END IF;
   END;
   $$
