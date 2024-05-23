@@ -15,7 +15,7 @@ export class OrderController implements OrderControllerPort {
 
     async createOrder(req: Request, res: Response): Promise<Response> {
 
-      const orderRequest: OrderRequest = adaptToOrderRequest(req.body);
+      const orderRequest: OrderRequest = this.adaptToOrderRequest(req.body);
       const validationErrors = validateOrderRequest(orderRequest);
 
         if (validationErrors.length > 0) {
@@ -28,13 +28,13 @@ export class OrderController implements OrderControllerPort {
         }
     }
 
-    function adaptToOrderRequest(request:any): OrderRequest {
+    private adaptToOrderRequest(request:any): OrderRequest {
       return {
         customerId: request.customer_id,
-        command: request.comand,
+        command: request.command,
         orderStatus: request.order_status,
         totalPrice: request.total_price,
-        items: request.itens.map((item: any) => ({
+        items: request.items.map((item: any) => ({
           productId: item.product_id,
           quantity: item.amount,
           productName: item.product_name,
@@ -44,9 +44,10 @@ export class OrderController implements OrderControllerPort {
       }
     }
 
-    async getOrderById(req: Request, res: Response): Promise<Response> {
+    // async getOrderById(req: Request, res: Response): Promise<Response> {
 
-    }
+
+    // }
 }
 
 export const provideOrderController = new OrderController()
