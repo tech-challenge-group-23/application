@@ -1,6 +1,7 @@
 import { DATABASE, DATABASE_HOST, DATABASE_PASSWORD, DATABASE_PORT, DATABASE_USER } from '@/env';
 import { Client } from 'pg';
 const client = new Client({
+  database: DATABASE,
   host: DATABASE_HOST,
   user: DATABASE_USER,
   password: DATABASE_PASSWORD,
@@ -42,8 +43,8 @@ export async function down() {
   await client.query(`DO
   $$
   BEGIN
-    IF EXISTS (SELECT * FROM pg_type typ WHERE typ.typname = '"order_status"') THEN
-      DROP TYPE "order_status";
+    IF EXISTS (SELECT * FROM pg_type typ WHERE typ.typname = 'order_status') THEN
+      DROP TYPE "order_status" CASCADE;
     END IF;
   END;
   $$
