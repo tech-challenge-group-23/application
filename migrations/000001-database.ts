@@ -10,7 +10,7 @@ const client = new Client({
 
 export async function up() {
   await client.connect();
-  const db = await client.query(`SELECT FROM pg_database WHERE dataname = '${DATABASE}'`);
+  const db = await client.query(`SELECT FROM pg_database WHERE datname = '${DATABASE}'`);
 
   if (!db.rowCount) {
     await client.query(`CREATE DATABASE "${DATABASE}";`);
