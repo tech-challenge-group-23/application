@@ -57,7 +57,7 @@ export class OrderService implements OrderServicePort {
         }
         return newItem;
     }),
-      orderUpdatedAt: this.assocOrderUpdateAt(this.getOrderStatus(orderRequest.order_status)),
+      orderUpdatedAt: this.appendOrderUpdateAt(this.getOrderStatus(orderRequest.order_status)),
       createdAt: new Date()
     }
   }
@@ -77,7 +77,7 @@ export class OrderService implements OrderServicePort {
     }
   }
 
-  private assocOrderUpdateAt(status: OrderStatus, orderUpdatedAt?: OrderUpdateInfo[]) {
+  private appendOrderUpdateAt(status: OrderStatus, orderUpdatedAt?: OrderUpdateInfo[]) {
     const updateInfo = {status: status, updatedAt: new Date()}
     if(!orderUpdatedAt) {
       orderUpdatedAt = [];
