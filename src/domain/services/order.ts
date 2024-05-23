@@ -77,3 +77,5 @@ export class OrderService implements OrderServicePort {
   }
 
 }
+
+export const provideOrderService = new OrderService()
