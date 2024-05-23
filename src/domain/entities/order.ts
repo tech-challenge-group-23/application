@@ -1,11 +1,14 @@
- enum OrderStatus {
+import { Entity, Column, PrimaryGeneratedColumn, } from "typeorm"
+
+export enum OrderStatus {
   Received = 'recebido',
   Preparing = 'em preparação',
   Ready = 'pronto',
-  Finished = 'finalizado'
+  Finished = 'finalizado',
+  Unknown = ''
 }
 
- type OrderItem = {
+export type OrderItem = {
   productId: number
   quantity: number
   productName: string
@@ -13,18 +16,53 @@
   notes?: string
 }
 
-type OrderUpdateInfo = {
+export type OrderUpdateInfo = {
   status: OrderStatus
   updatedAt: Date
 }
 
-export type Order = {
-  id: number
-  customerId?: number
+export type OrderRequest = {
+  customerId: number
   command: number
-  orderStatus: OrderStatus
+  orderStatus: string
   totalPrice: number
   items: OrderItem[]
-  orderUpdatedAt: OrderUpdateInfo[]
-  createdAt: Date
-};
+}
+
+// export type Order = {
+//   id?: number;
+//   customerId: number;
+//   command: number;
+//   orderStatus: OrderStatus;
+//   totalPrice: number;
+//   items: OrderItem[];
+//   orderUpdatedAt: OrderUpdateInfo[];
+//   createdAt: Date;
+// }
+
+@Entity()
+export class OrderDB {
+  @PrimaryGeneratedColumn()
+  id?: number;
+
+  @Column({ nullable: true })
+  customerId?: number;
+
+  @Column()
+  command: number;
+
+  @Column({ type: 'enum', enum: OrderStatus })
+  orderStatus: OrderStatus;
+
+  @Column('decimal', { precision: 10, scale: 2 })
+  totalPrice: number;
+
+  @Column()
+  items: OrderItem[];
+
+  @Column()
+  orderUpdatedAt: OrderUpdateInfo[];
+
+  @Column()
+  createdAt: Date;
+}
