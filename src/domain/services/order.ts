@@ -1,6 +1,6 @@
 import { OrderRepositoryPort } from "@/ports/postgres/order";
 import { OrderServicePort } from "@/ports/services/order";
-import { OrderDB, OrderRequest, OrderStatus, OrderUpdateInfo} from "../entities/order";
+import { Order, OrderItem, OrderItemRequest, OrderRequest, OrderStatus, OrderUpdateInfo} from "../entities/order";
 import { provideOrderRepository } from "@/adapters/output/postgres/order";
 
 export class OrderService implements OrderServicePort {
@@ -10,56 +10,67 @@ export class OrderService implements OrderServicePort {
       this.orderRepository = provideOrderRepository
   }
 
-  async create(request: OrderRequest): Promise<number> {
+  async create(request: OrderRequest): Promise<Order> {
 
     const newOrder = this.generateNewOrder(request);
-
       try{
-          const result = await this.orderRepository.save(newOrder)
+          const result = await this.orderRepository.save(newOrder);
+
 
           return result;
 
       } catch(error) {
           if(error instanceof Error)
               throw new Error(`An error occurred when creating a new order. Details: ${error.message}`)
-          throw new Error(`An error occurred when creating a new order. Details: ${error}`)
+          throw new Error(`An error occurred when creating a new order. : ${error}`)
       }
   }
 
-  async getById(orderId:number): Promise<OrderDB> {
+  async getById(orderId:number): Promise<Order> {
     try{
       const result = await this.orderRepository.retrieveById(orderId);
       return result
 
     } catch(error) {
         if(error instanceof Error)
-          throw new Error(`Error when searching for cpf: ${error.message}`)
+          throw new Error(`An error occurred while trying to obtain the order. Details: ${error.message}`)
 
-      throw new Error(`Error when searching for cpf: ${error}`)
+      throw new Error(`An error occurred while trying to obtain the order. Details: ${error}`)
     }
   }
 
-  private generateNewOrder(orderRequest: OrderRequest): OrderDB {
+  private generateNewOrder(orderRequest: OrderRequest): Order {
     return {
-      customerId: orderRequest.customerId,
+      customerId: orderRequest.customer_id,
       command: orderRequest.command,
-      orderStatus: this.getOrderStatus(orderRequest.orderStatus),
-      totalPrice: orderRequest.totalPrice,
-      items: orderRequest.items,
-      orderUpdatedAt: this.assocOrderUpdateAt(OrderStatus.Received),
+      orderStatus: this.getOrderStatus(orderRequest.order_status),
+      totalPrice: orderRequest.total_price,
+      items: orderRequest.items.map((item: OrderItemRequest): OrderItem => {
+        const newItem: OrderItem = {
+            productId: item.product_id,
+            quantity: item.quantity,
+            productName: item.product_name,
+            price: item.price,
+        };
+        if (item.notes) {
+            newItem.notes = item.notes;
+        }
+        return newItem;
+    }),
+      orderUpdatedAt: this.assocOrderUpdateAt(this.getOrderStatus(orderRequest.order_status)),
       createdAt: new Date()
     }
   }
 
   private getOrderStatus(status: string): OrderStatus {
     switch (status) {
-      case OrderStatus.Received:
+      case 'recebido':
         return OrderStatus.Received;
-      case OrderStatus.Preparing:
+      case 'em preparação':
         return OrderStatus.Preparing;
-      case OrderStatus.Ready:
+      case 'pronto':
         return OrderStatus.Ready;
-      case OrderStatus.Finished:
+      case 'finalizado':
         return OrderStatus.Finished;
       default:
         return OrderStatus.Unknown;
@@ -75,7 +86,6 @@ export class OrderService implements OrderServicePort {
     orderUpdatedAt.push(updateInfo);
     return orderUpdatedAt;
   }
-
 }
 
 export const provideOrderService = new OrderService()

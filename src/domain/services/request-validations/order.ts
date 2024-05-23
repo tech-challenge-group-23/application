@@ -3,11 +3,11 @@ import { OrderRequest, OrderStatus } from "@/domain/entities/order"
 export function validateOrderRequest(request: OrderRequest): string[] {
   const errors: string[] = [];
 
-  if(!isOrderStatus(request.orderStatus )){
+  if(!isOrderStatus(request.order_status)){
     errors.push ('invalid value for order_status');
   }
 
-  if (request.customerId == null) {
+  if (request.customer_id == null) {
     errors.push('customerId is mandatory')
   }
 
@@ -15,11 +15,11 @@ export function validateOrderRequest(request: OrderRequest): string[] {
     errors.push('command is mandatory')
   }
 
-  if (request.orderStatus == null) {
+  if (request.order_status == null) {
     errors.push('orderStatus is mandatory')
   }
 
-  if (request.totalPrice == null) {
+  if (request.total_price == null) {
     errors.push('totalPrice is mandatory')
   }
 

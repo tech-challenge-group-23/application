@@ -1,4 +1,4 @@
-import { OrderItem, OrderRequest } from "@/domain/entities/order";
+import { OrderItem, OrderRequest, Order, OrderStatus, OrderItemRequest } from "@/domain/entities/order";
 import { provideOrderService } from "@/domain/services/order";
 import { OrderControllerPort } from "@/ports/controllers/order";
 import { OrderServicePort } from "@/ports/services/order";
@@ -13,44 +13,26 @@ export class OrderController implements OrderControllerPort {
     }
 
     async createOrder(req: Request, res: Response): Promise<Response> {
+      try{
+        const validationErrors = validateOrderRequest(req.body);
 
-      const orderRequest: OrderRequest = this.adaptToOrderRequest(req.body);
-      const validationErrors = validateOrderRequest(orderRequest);
+          if (validationErrors.length > 0) {
+              return res.status(400).json({ errors: validationErrors });
+          }
 
-        if (validationErrors.length > 0) {
-            return res.status(400).send(validationErrors)
-        }
+          //TODO add searchById em customer para validar se o customer o pedido é valido
+          //const customer = await this.customerService.searchById(req.body.customer_id);
 
-        //TODO add searchById em customer para validar se o customer o pedido é valido
-        //const customer = await this.customerService.searchById(req.body.customer_id);
+          const response = await this.orderService.create(req.body);
+          return res.status(201).json(response);
 
-        else {
-          const response = await this.orderService.create(orderRequest)
-
-          return res.status(201).send(response)
-        }
-    }
-
-    private adaptToOrderRequest(request:any): OrderRequest {
-      return {
-        customerId: request.customer_id,
-        command: request.command,
-        orderStatus: request.order_status,
-        totalPrice: request.total_price,
-        items: request.items.map((item: any) => ({
-          productId: item.product_id,
-          quantity: item.amount,
-          productName: item.product_name,
-          price: item.price,
-          notes: item.observation
-        }))
+      } catch (error) {
+        console.error("Error creating order: ", error);
+        return res.status(500).json({ message: "Internal Server Error" });
       }
+
+
     }
-
-    // async getOrderById(req: Request, res: Response): Promise<Response> {
-
-
-    // }
 }
 
 export const provideOrderController = new OrderController()

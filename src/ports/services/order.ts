@@ -1,8 +1,7 @@
-import { OrderDB, OrderRequest } from "@/domain/entities/order";
+import { Order, OrderRequest } from "@/domain/entities/order";
 
 
 export interface OrderServicePort {
-    create(request: OrderRequest): Promise<number>
-    getById(orderId:number): Promise<OrderDB>
-    // updateOrderStatus(orderId: number, newStatus: OrderStatus): Promisse<Order>
+    create(request: OrderRequest): Promise<Order>
+    getById(orderId:number): Promise<Order>
 }

@@ -1,14 +1,14 @@
-import { OrderDB, OrderStatus } from '@/domain/entities/order'
+import { Order } from '@/domain/entities/order'
 import { OrderRepositoryPort } from "@/ports/postgres/order";
 import { AppDataSource } from '..';
 
 export class OrderRepository implements OrderRepositoryPort {
-  async save(order: OrderDB): Promise<number> {
+  async save(order: Order): Promise<Order> {
     try{
       const insertOrder = await AppDataSource
       .createQueryBuilder()
       .insert()
-      .into(OrderDB)
+      .into(Order)
       .values([
         { customerId: order.customerId,
           command: order.command,
@@ -18,10 +18,10 @@ export class OrderRepository implements OrderRepositoryPort {
           orderUpdatedAt: order.orderUpdatedAt,
           createdAt: order.createdAt}
       ])
-      .returning(['id'])
+      .returning(['id', 'customerId', 'command', 'orderStatus', 'totalPrice', 'items'])
       .execute()
 
-      return insertOrder.raw[0].id
+      return insertOrder.raw[0]
 
     } catch(error) {
       if(error instanceof Error)
@@ -30,12 +30,12 @@ export class OrderRepository implements OrderRepositoryPort {
     }
   }
 
-  async retrieveById(orderId: number): Promise<OrderDB> {
+  async retrieveById(orderId: number): Promise<Order> {
     try{
       const retrieveOrder = await AppDataSource
       .createQueryBuilder()
       .select('order')
-      .from(OrderDB, 'order')
+      .from(Order, 'order')
       .where('order.id = :id', {id: orderId})
       .getOne()
 
@@ -47,8 +47,8 @@ export class OrderRepository implements OrderRepositoryPort {
 
     }catch(error) {
       if(error instanceof Error)
-          throw new Error(`Erro ao buscar o pedido. Datalhes: ${error.message}`)
-      throw new Error(`Erro ao buscar o pedido. Detalhes: ${error}`)
+          throw new Error(`Cannot find the order. Details: ${error.message}`)
+      throw new Error(`Cannot find the order. Details ${error}`)
     }
   }
 }

@@ -16,32 +16,29 @@ export type OrderItem = {
   notes?: string
 }
 
+export type OrderItemRequest = {
+  product_id: number
+  quantity: number
+  product_name: string
+  price: number
+  notes?: string
+}
+
 export type OrderUpdateInfo = {
   status: OrderStatus
   updatedAt: Date
 }
 
 export type OrderRequest = {
-  customerId: number
+  customer_id: number
   command: number
-  orderStatus: string
-  totalPrice: number
-  items: OrderItem[]
+  order_status: string
+  total_price: number
+  items: OrderItemRequest[]
 }
 
-// export type Order = {
-//   id?: number;
-//   customerId: number;
-//   command: number;
-//   orderStatus: OrderStatus;
-//   totalPrice: number;
-//   items: OrderItem[];
-//   orderUpdatedAt: OrderUpdateInfo[];
-//   createdAt: Date;
-// }
-
 @Entity()
-export class OrderDB {
+export class Order {
   @PrimaryGeneratedColumn()
   id?: number;
 
@@ -57,10 +54,10 @@ export class OrderDB {
   @Column('decimal', { precision: 10, scale: 2 })
   totalPrice: number;
 
-  @Column("jsonb", {array: true})
+  @Column("jsonb")
   items: OrderItem[];
 
-  @Column("jsonb", {array: true})
+  @Column("jsonb")
   orderUpdatedAt: OrderUpdateInfo[];
 
   @Column()

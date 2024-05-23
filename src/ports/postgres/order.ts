@@ -1,8 +1,8 @@
-import { OrderDB, OrderStatus } from '../../domain/entities/order';
+import { Order } from '../../domain/entities/order';
 
 export interface OrderRepositoryPort {
-  save(order: OrderDB): Promise<number>
-  retrieveById(orderId:number): Promise<OrderDB>
+  save(order: Order): Promise<Order>
+  retrieveById(orderId:number): Promise<Order>
+  //retrieveByStatus(orderId:number): Promise<Order[]>
   // update(order: Order): Promise<number>
-  // updateOrderStatus(orderId: number, newStatus: OrderStatus): Promise<Order>
 }
