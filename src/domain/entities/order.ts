@@ -37,7 +37,7 @@ export type OrderRequest = {
   items: OrderItemRequest[]
 }
 
-@Entity()
+@Entity({name: "orders"})
 export class Order {
   @PrimaryGeneratedColumn()
   id?: number;
@@ -46,20 +46,20 @@ export class Order {
   customerId?: number;
 
   @Column()
-  command: number;
+  command!: number;
 
   @Column({ type: 'enum', enum: OrderStatus })
-  orderStatus: OrderStatus;
+  orderStatus!: OrderStatus;
 
   @Column('decimal', { precision: 10, scale: 2 })
-  totalPrice: number;
+  totalPrice!: number;
 
   @Column("jsonb")
-  items: OrderItem[];
+  items!: OrderItem[];
 
   @Column("jsonb")
-  orderUpdatedAt: OrderUpdateInfo[];
+  orderUpdatedAt!: OrderUpdateInfo[];
 
   @Column()
-  createdAt: Date;
+  createdAt!: Date;
 }

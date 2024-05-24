@@ -40,7 +40,7 @@ export class CustomerService implements CustomerServicePort {
 
     async searchById(id: number): Promise<Customer | null> {
         const result = await this.customerRepository.searchById(id)
-        !result && console.info(`Customer id: ${id} not found in database`)
+        !result && console.info(`[INFO] Customer id ${id} was not found in the database`)
         return result
     }
 }
