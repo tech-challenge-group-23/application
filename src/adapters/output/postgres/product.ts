@@ -10,51 +10,15 @@ export class ProductRepository implements ProductRepositoryPort {
         .into(Product)
         .values([
           {
-            categoryId: Number(product.categoryId),
+            categoryId: product.categoryId,
             name: product.name,
             description: product.description,
-            price: Number(product.price),
+            price: product.price,
             image: product.image,
           },
         ])
         .returning(['id'])
         .execute();
-
-      // console.log("here", product)
-
-      // console.log("test", {
-      //     ...product,
-      //     categoryId: Number(product.categoryId),
-      //     price: Number(product.price),
-      // })
-
-      // const newProduct = insertProduct.create({
-      //     ...product,
-      //     categoryId: Number(product.categoryId),
-      //     price: Number(product.price),
-      // })
-
-      // console.log("here3")
-
-      // const response = await insertProduct.save(newProduct)
-
-      // console.log("here2")
-
-      // console.log(response)
-      // .createQueryBuilder()
-      // .insert()
-      // .into(Product)
-      // .values([
-      //     {
-      //         categoryId: product.categoryId,
-      //         name: product.name,
-      //         description: product.description,
-      //         price: product.price,
-      //         image: product.image,
-      //     }
-      // ]).execute()
-
-      console.log(insertProduct);
 
       return insertProduct.raw[0].id;
     } catch (error) {
@@ -67,21 +31,15 @@ export class ProductRepository implements ProductRepositoryPort {
 
   async delete(productId: number): Promise<boolean> {
     try {
-      // const client = await this.pool.connect();
-      // const query = `
-      // DELETE FROM products
-      // WHERE id=$1;
-      // `;
-      // const values = [
-      //     productId
-      // ];
+      const deleteProduct = await AppDataSource.createQueryBuilder()
+      .delete()
+      .from(Product)
+      .where("id = :id", { id: productId })
+      .execute()
 
-      // const result = await client.query(query, values);
-      // client.release();
-
-      // if (result.rowCount === 0) {
-      //     return false
-      // }
+      if (deleteProduct.affected === 0) {
+          return false
+      }
 
       return true;
     } catch (error) {
@@ -94,35 +52,14 @@ export class ProductRepository implements ProductRepositoryPort {
 
   async listByCategory(categoryId: number): Promise<Product[]> {
     try {
-      // const client = await this.pool.connect();
-      // const query = `
-      // SELECT
-      // *
-      // FROM products
-      // WHERE category_id = $1
-      // `;
-      // const values = [
-      //     categoryId
-      // ];
 
-      // const result = await client.query(query, values);
-      // client.release();
+      const listProductByCategory = await AppDataSource
+      .createQueryBuilder()
+      .select("products")
+      .from(Product, "products")
+      .where("products.categoryId = :categoryId", { categoryId: categoryId }).getMany()
 
-      var products: Product[] = [];
-      // result.rows.forEach(product => {
-      //   products.push({
-      //     id: Number(product.id),
-      //     categoryId: product.category_id,
-      //     name: product.name,
-      //     description: product.description,
-      //     price: Number(product.price),
-      //     image: product.image,
-      //     createdAt: product.created_at,
-      //     updatedAt: product.updated_at
-      //   })
-      // });
-
-      return products;
+      return listProductByCategory;
     } catch (error) {
       if (error instanceof Error) {
         throw new Error(`Error listing product: ${error.message}`);

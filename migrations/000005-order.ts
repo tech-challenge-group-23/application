@@ -14,7 +14,7 @@ export async function up() {
     `CREATE TYPE order_status AS ENUM ('recebido', 'em preparação', 'pronto', 'finalizado');
     `,
   );
-  await client.query(`CREATE TABLE IF NOT EXISTS "order"
+  await client.query(`CREATE TABLE IF NOT EXISTS "orders"
   (
       id bigserial NOT NULL,
       customer_id bigint,
@@ -27,7 +27,7 @@ export async function up() {
       PRIMARY KEY (id)
   );`);
 
-  await client.query(`ALTER TABLE IF EXISTS "order"
+  await client.query(`ALTER TABLE IF EXISTS "orders"
     ADD FOREIGN KEY (customer_id)
     REFERENCES customers (id) MATCH SIMPLE
     ON UPDATE NO ACTION
@@ -39,7 +39,7 @@ export async function up() {
 
 export async function down() {
   await client.connect();
-  await client.query(`DROP TABLE IF EXISTS "order";`);
+  await client.query(`DROP TABLE IF EXISTS "orders";`);
   await client.query(`DO
   $$
   BEGIN

@@ -1,8 +1,6 @@
-// import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
 
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
-
-@Entity()
+@Entity({name: "products"})
 export class Product {
   @PrimaryGeneratedColumn()
   id?: number;
@@ -10,37 +8,31 @@ export class Product {
   @Column()
   categoryId!: number;
 
-  @Column()
+  @Column({
+    unique: true
+  })
   name!: string;
 
-  @Column({ nullable: true })
+  @Column({
+    nullable: true,
+    type: "text"
+
+   })
   description?: string;
 
-  @Column()
+  @Column("numeric", {
+    scale: 2
+  })
   price!: number;
 
   @Column('bytea', { nullable: true })
   image?: Buffer;
 
-  @Column({ type: 'timestamp', nullable: true })
+  @CreateDateColumn()
   createdAt?: Date;
 
-  @Column({ type: 'timestamp', nullable: true })
+  @CreateDateColumn()
   updatedAt?: Date;
-
-  //   constructor(
-  //     categoryId: number,
-  //     name: string,
-  //     description: string = '',
-  //     price: number,
-  //     image: Buffer | undefined = undefined,
-  //   ) {
-  //     this.categoryId = categoryId;
-  //     this.name = name;
-  //     this.description = description;
-  //     this.price = price;
-  //     this.image = image;
-  //   }
 }
 
 export type ProductServiceResponse = {

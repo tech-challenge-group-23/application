@@ -1,6 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn } from 'typeorm';
 
-@Entity()
+@Entity({name: "customers"})
 export class Customer {
   @PrimaryGeneratedColumn()
   id?: number;
@@ -16,7 +16,7 @@ export class Customer {
   @Column('text')
   email!: string;
 
-  @Column('timestamp with time zone')
+  @CreateDateColumn()
   created_at?: Date;
 
   // constructor(name: string, cpf: string, email: string) {

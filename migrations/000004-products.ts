@@ -22,12 +22,12 @@ export async function up() {
 );
 `);
 
-  // await client.query(`ALTER TABLE IF EXISTS products
-  //   ADD FOREIGN KEY (category_id)
-  //   REFERENCES product_category (id) MATCH SIMPLE
-  //   ON UPDATE NO ACTION
-  //   ON DELETE NO ACTION
-  //   NOT VALID;`);
+  await client.query(`ALTER TABLE IF EXISTS products
+    ADD FOREIGN KEY (category_id)
+    REFERENCES product_category (id) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION
+    NOT VALID;`);
 
   await client.end();
 }
