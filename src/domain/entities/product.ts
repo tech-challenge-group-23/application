@@ -1,45 +1,53 @@
-import { Entity, Column, PrimaryGeneratedColumn, } from "typeorm"
+// import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity()
 export class Product {
-    @PrimaryGeneratedColumn()
-    id?: number;
+  @PrimaryGeneratedColumn()
+  id?: number;
 
-    @Column()
-    categoryId: number;
+  @Column()
+  categoryId!: number;
 
-    @Column()
-    name: string;
+  @Column()
+  name!: string;
 
-    @Column()
-    description?: string
+  @Column({ nullable: true })
+  description?: string;
 
-    @Column()
-    price: number
+  @Column()
+  price!: number;
 
-    @Column()
-    image?: Buffer
+  @Column('bytea', { nullable: true })
+  image?: Buffer;
 
-    @Column()
-    createdAt?: string
+  @Column({ type: 'timestamp', nullable: true })
+  createdAt?: Date;
 
-    @Column()
-    updatedAt?: string
+  @Column({ type: 'timestamp', nullable: true })
+  updatedAt?: Date;
 
-    constructor(categoryId: number, name: string, description: string, price: number, image: Buffer) {
-        this.categoryId = categoryId;
-        this.name = name;
-        this.description = description
-        this.price = price
-        this.image = image
-    }
+  //   constructor(
+  //     categoryId: number,
+  //     name: string,
+  //     description: string = '',
+  //     price: number,
+  //     image: Buffer | undefined = undefined,
+  //   ) {
+  //     this.categoryId = categoryId;
+  //     this.name = name;
+  //     this.description = description;
+  //     this.price = price;
+  //     this.image = image;
+  //   }
 }
 
 export type ProductServiceResponse = {
-    created?: boolean
-    isValid?: boolean
-    wasFound?: boolean
-    products?: Product[]
-    message?: string
-    errorMessage?: string
+  created?: boolean;
+  isValid?: boolean;
+  wasFound?: boolean;
+  products?: Product[];
+  message?: string;
+  errorMessage?: string;
 };

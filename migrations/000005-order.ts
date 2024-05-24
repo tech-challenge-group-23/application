@@ -29,7 +29,7 @@ export async function up() {
 
   await client.query(`ALTER TABLE IF EXISTS "order"
     ADD FOREIGN KEY (customer_id)
-    REFERENCES customer (id) MATCH SIMPLE
+    REFERENCES customers (id) MATCH SIMPLE
     ON UPDATE NO ACTION
     ON DELETE NO ACTION
     NOT VALID;`);
