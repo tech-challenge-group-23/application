@@ -1,4 +1,4 @@
-import { Order } from '@/domain/entities/order'
+import { Order, OrderStatus } from '@/domain/entities/order'
 import { OrderRepositoryPort } from "@/ports/postgres/order";
 import { AppDataSource } from '..';
 
@@ -36,6 +36,34 @@ export class OrderRepository implements OrderRepositoryPort {
     const order = await this.repository
     .findOne({where: { id }})
     return order;
+  }
+  async retrieveByFilters(orderStatus?: OrderStatus, customerId?: number): Promise<Order[] | null> {
+
+    if (orderStatus && customerId) {
+      return await AppDataSource.createQueryBuilder()
+        .select('orders')
+        .from(Order, 'orders')
+        .where('orders.orderStatus = :orderStatus', { orderStatus: orderStatus })
+        .andWhere('orders.customerId = :customerId', { customerId: customerId })
+        .getMany();
+    }
+
+    if(orderStatus){
+      return await AppDataSource.createQueryBuilder()
+      .select('orders')
+        .from(Order, 'orders')
+        .where('orders.orderStatus = :orderStatus', { orderStatus: orderStatus })
+        .getMany();
+    }
+
+    if(customerId){
+      return await AppDataSource.createQueryBuilder()
+        .select('orders')
+        .from(Order, 'orders')
+        .where('orders.customerId = :customerId', { customerId: customerId })
+        .getMany();
+    }
+    return null
   }
 }
 

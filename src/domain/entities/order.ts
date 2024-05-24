@@ -4,8 +4,7 @@ export enum OrderStatus {
   Received = 'recebido',
   Preparing = 'em preparação',
   Ready = 'pronto',
-  Finished = 'finalizado',
-  Unknown = ''
+  Finished = 'finalizado'
 }
 
 export type OrderItem = {

@@ -2,7 +2,7 @@ import { OrderItem, OrderRequest, Order, OrderStatus, OrderItemRequest } from "@
 import { provideOrderService } from "@/domain/services/order";
 import { OrderControllerPort } from "@/ports/controllers/order";
 import { OrderServicePort } from "@/ports/services/order";
-import { validateOrderRequest } from "@/domain/services/request-validations/order";
+import { validateOrderRequest, validateOrderStatus} from "@/domain/services/request-validations/order";
 import { Request, Response } from "express";
 import { CustomerServicePort } from "@/ports/services/customer";
 import { provideCustomerService } from "@/domain/services/customer";
@@ -47,8 +47,34 @@ export class OrderController implements OrderControllerPort {
       return res.status(200).send(response)
 
     }catch (error) {
-     console.error("Error getting order by id: ", error);
-     return res.status(500).send("Failed to get the request.");
+     console.error("Error fetching order by id: ", error);
+     return res.status(500).send("Internal Server Error");
+    }
+  }
+
+  async getOrders(req: Request, res: Response): Promise<Response> {
+    try{
+      const { order_status, customer_id } = req.query;
+
+      const orderStatus: string | undefined = order_status ? order_status as string : undefined;
+      const customerId: number | undefined = customer_id ? parseInt(customer_id as string) : undefined;
+      const validationError = validateOrderStatus(orderStatus);
+
+      if(validationError) {
+        return res.status(400).json({ errors: validationError });
+      }
+
+      const response = await this.orderService.findByFilters(orderStatus, customerId);
+
+      if(!response){
+        return res.status(404).send("Orders was not found");
+      }
+
+      return res.status(200).json(response)
+
+    }catch (error){
+      console.error("Error fetching orders:", error);
+      return res.status(500).send("Internal Server Error");
     }
   }
 }

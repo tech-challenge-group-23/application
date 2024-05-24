@@ -3,8 +3,6 @@ import { OrderRequest, OrderStatus } from "@/domain/entities/order"
 export function validateOrderRequest(request: OrderRequest, isCustomer: boolean): string[] {
   const errors: string[] = [];
 
-
-
   if (request.customer_id == null) {
     errors.push('customerId is mandatory')
   }
@@ -21,9 +19,8 @@ export function validateOrderRequest(request: OrderRequest, isCustomer: boolean)
     errors.push('orderStatus is mandatory')
   }
 
-  if(request.order_status != null && !isOrderStatus(request.order_status)){
-    errors.push ('invalid value for order_status');
-  }
+  const invalidOrderStatusError = validateOrderStatus(request.order_status);
+  invalidOrderStatusError && errors.push(invalidOrderStatusError);
 
   if (request.total_price == null) {
     errors.push('totalPrice is mandatory')
@@ -36,6 +33,12 @@ export function validateOrderRequest(request: OrderRequest, isCustomer: boolean)
   return errors
 }
 
-function isOrderStatus(status: string): status is OrderStatus {
-  return Object.values(OrderStatus).includes(status as OrderStatus);
+export function validateOrderStatus(status?: string): string | undefined {
+  if(status != null && !isOrderStatus(status)){
+    return 'invalid value for order_status'
+  }
+}
+
+function isOrderStatus(status: string): boolean {
+return Object.values(OrderStatus).includes(status as OrderStatus);
 }

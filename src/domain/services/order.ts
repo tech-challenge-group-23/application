@@ -32,11 +32,35 @@ export class OrderService implements OrderServicePort {
       return result
   }
 
+  async findByFilters(orderStatus?: string, customerId?: number): Promise<Order[] | null> {
+    try{
+      let statusEnum: OrderStatus | undefined;
+
+      if(orderStatus) {
+        statusEnum = this.getOrderStatus(orderStatus);
+
+        if(!statusEnum){
+          throw new Error(`Invalid order status: ${orderStatus}`);
+        }
+      }
+
+    return await this.orderRepository.retrieveByFilters(statusEnum, customerId);
+
+    }catch(error) {
+      throw new Error(`Error in find orders by filters: ${error}`);
+    }
+  }
+
   private generateNewOrder(orderRequest: OrderRequest): Order {
-    return {
+    const orderStatusEnum = this.getOrderStatus(orderRequest.order_status);
+    if(!orderStatusEnum){
+      throw new Error(`Invalid order status: ${orderRequest.order_status}`);
+    }
+
+    const order: Order = {
       customerId: orderRequest.customer_id,
       command: orderRequest.command,
-      orderStatus: this.getOrderStatus(orderRequest.order_status),
+      orderStatus: orderStatusEnum,
       totalPrice: orderRequest.total_price,
       items: orderRequest.items.map((item: OrderItemRequest): OrderItem => {
         const newItem: OrderItem = {
@@ -50,12 +74,14 @@ export class OrderService implements OrderServicePort {
         }
         return newItem;
     }),
-      orderUpdatedAt: this.appendOrderUpdateAt(this.getOrderStatus(orderRequest.order_status)),
+      orderUpdatedAt: this.appendOrderUpdateAt(orderStatusEnum),
       createdAt: new Date()
     }
+
+    return order
   }
 
-  private getOrderStatus(status: string): OrderStatus {
+  private getOrderStatus(status: string): OrderStatus | undefined {
     switch (status) {
       case 'recebido':
         return OrderStatus.Received;
@@ -65,12 +91,10 @@ export class OrderService implements OrderServicePort {
         return OrderStatus.Ready;
       case 'finalizado':
         return OrderStatus.Finished;
-      default:
-        return OrderStatus.Unknown;
     }
   }
 
-  private appendOrderUpdateAt(status: OrderStatus, orderUpdatedAt?: OrderUpdateInfo[]) {
+  private appendOrderUpdateAt(status: OrderStatus, orderUpdatedAt?: OrderUpdateInfo[]): OrderUpdateInfo[] {
     const updateInfo = {status: status, updatedAt: new Date()}
     if(!orderUpdatedAt) {
       orderUpdatedAt = [];
