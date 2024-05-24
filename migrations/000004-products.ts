@@ -10,19 +10,17 @@ const client = new Client({
 
 export async function up() {
   await client.connect();
-  await client.query(`CREATE TABLE IF NOT EXISTS products
-    (
-        id bigserial NOT NULL,
-        category_id smallint NOT NULL,
-        name text NOT NULL,
-        description text,
-        price numeric NOT NULL,
-        image bytea,
-        created_at timestamp with time zone NOT NULL DEFAULT now(),
-        updated_at timestamp with time zone NOT NULL DEFAULT now(),
-        PRIMARY KEY (id),
-        CONSTRAINT name_unique UNIQUE (name)
-    );`);
+  await client.query(`CREATE TABLE IF NOT EXISTS products (
+    id SERIAL PRIMARY KEY,
+    category_id INTEGER NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    price NUMERIC(10,2) NOT NULL,
+    image BYTEA,
+    created_at TIMESTAMP WITH TIME ZONE,
+    updated_at TIMESTAMP WITH TIME ZONE
+);
+`);
 
   await client.query(`ALTER TABLE IF EXISTS products
     ADD FOREIGN KEY (category_id)

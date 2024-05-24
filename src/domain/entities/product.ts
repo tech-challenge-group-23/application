@@ -1,19 +1,45 @@
-export type Product = {
-    id?: number
-    categoryId: Int16Array
-    name: string
-    description?: string
-    price: number
-    image?: Buffer
-    createdAt?: string
-    updatedAt?: string
-};
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
+
+@Entity({name: "products"})
+export class Product {
+  @PrimaryGeneratedColumn()
+  id?: number;
+
+  @Column()
+  categoryId!: number;
+
+  @Column({
+    unique: true
+  })
+  name!: string;
+
+  @Column({
+    nullable: true,
+    type: "text"
+
+   })
+  description?: string;
+
+  @Column("numeric", {
+    scale: 2
+  })
+  price!: number;
+
+  @Column('bytea', { nullable: true })
+  image?: Buffer;
+
+  @CreateDateColumn()
+  createdAt?: Date;
+
+  @CreateDateColumn()
+  updatedAt?: Date;
+}
 
 export type ProductServiceResponse = {
-    created?: boolean
-    isValid?: boolean
-    wasFound?: boolean
-    products?: Product[]
-    message?: string
-    errorMessage?: string
+  created?: boolean;
+  isValid?: boolean;
+  wasFound?: boolean;
+  products?: Product[];
+  message?: string;
+  errorMessage?: string;
 };

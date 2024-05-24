@@ -10,21 +10,20 @@ const client = new Client({
 
 export async function up() {
   await client.connect();
-  await client.query(`CREATE TABLE IF NOT EXISTS customer
-    (
-        id bigserial NOT NULL,
-        name text NOT NULL,
-        cpf varchar(11) NOT NULL,
-        email text NOT NULL,
-        created_at timestamp with time zone NOT NULL DEFAULT now(),
-        PRIMARY KEY (id)
-    );`);
+  await client.query(`CREATE TABLE IF NOT EXISTS customers (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    cpf CHAR(11) NOT NULL,
+    email TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE
+);
+`);
 
   await client.end();
 }
 
 export async function down() {
   await client.connect();
-  await client.query(`DROP TABLE IF EXISTS "customer";`);
+  await client.query(`DROP TABLE IF EXISTS "customers";`);
   await client.end();
 }
