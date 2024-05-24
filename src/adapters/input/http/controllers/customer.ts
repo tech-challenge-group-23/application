@@ -13,9 +13,7 @@ export class CustomerController implements CustomerControllerPort {
         this.customerService = provideCustomerService
     }
 
-    // DONE: validação de nome: (name) -> validar caracteres especiais, primeira letra maiuscula e o resto minúscula em cada string, remover espaços extras, obrigatório;
     // TO DO: add rotas customer no swagger
-    // TO DO: remover created_at: new Date() do repository: dá erro "null value in column "created_at" of relation "customer" violates not-null constraint"
     // TO DO: add rota customer/getAll()???
     // TO DO: add rota customer/getById()???
 
@@ -32,10 +30,13 @@ export class CustomerController implements CustomerControllerPort {
         if (validation !== true) {
             return res.status(400).send(validation)
         } else {
-
             try {
                 customer.name = validateCustomerName(customer.name)
                 const response = await this.customerService.create(customer)
+
+                if (response === `CPF number already registered.`) {
+                    return res.status(400).send(response)
+                }
 
                 return res.status(201).send(response)
 
@@ -54,6 +55,10 @@ export class CustomerController implements CustomerControllerPort {
         } else {
             try {
                 const response = await this.customerService.searchByCpf(cpf)
+
+                if (response === `CPF not registered in the base.`) {
+                    return res.status(400).send(response)
+                }
 
                 return res.status(200).send(response)
 
