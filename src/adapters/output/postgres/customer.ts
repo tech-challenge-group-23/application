@@ -45,6 +45,12 @@ export class CustomerRepository implements CustomerRepositoryPort {
       throw new Error(`Error when searching for cpf: ${error}`);
     }
   }
+
+  async searchById(id: number): Promise<Customer | null> {
+    const customer = await AppDataSource.getRepository(Customer)
+    .findOne({where: { id }})
+    return customer;
+  }
 }
 
 export const provideCustomerRepository = new CustomerRepository();

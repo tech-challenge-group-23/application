@@ -1,14 +1,16 @@
 import { OrderRequest, OrderStatus } from "@/domain/entities/order"
 
-export function validateOrderRequest(request: OrderRequest): string[] {
+export function validateOrderRequest(request: OrderRequest, isCustomer: boolean): string[] {
   const errors: string[] = [];
 
-  if(!isOrderStatus(request.order_status)){
-    errors.push ('invalid value for order_status');
-  }
+
 
   if (request.customer_id == null) {
     errors.push('customerId is mandatory')
+  }
+
+  if (request.customer_id != null && !isCustomer){
+    errors.push('customerId not found')
   }
 
   if (request.command == null) {
@@ -17,6 +19,10 @@ export function validateOrderRequest(request: OrderRequest): string[] {
 
   if (request.order_status == null) {
     errors.push('orderStatus is mandatory')
+  }
+
+  if(request.order_status != null && !isOrderStatus(request.order_status)){
+    errors.push ('invalid value for order_status');
   }
 
   if (request.total_price == null) {
