@@ -28,7 +28,7 @@ export class OrderService implements OrderServicePort {
 
   async getById(orderId:number): Promise<Order | null> {
     const result = await this.orderRepository.retrieveById(orderId);
-    !result && console.info(`Order id: ${orderId} not found in database`)
+    !result && console.info(`[INFO] Order id ${orderId} was not found in the database`)
       return result
   }
 
