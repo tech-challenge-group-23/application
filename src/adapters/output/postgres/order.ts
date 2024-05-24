@@ -3,6 +3,8 @@ import { OrderRepositoryPort } from "@/ports/postgres/order";
 import { AppDataSource } from '..';
 
 export class OrderRepository implements OrderRepositoryPort {
+  private repository = AppDataSource.getRepository(Order);
+
   async save(order: Order): Promise<Order> {
     try{
       const insertOrder = await AppDataSource
@@ -30,26 +32,10 @@ export class OrderRepository implements OrderRepositoryPort {
     }
   }
 
-  async retrieveById(orderId: number): Promise<Order> {
-    try{
-      const retrieveOrder = await AppDataSource
-      .createQueryBuilder()
-      .select('order')
-      .from(Order, 'order')
-      .where('order.id = :id', {id: orderId})
-      .getOne()
-
-      if(retrieveOrder?.id) {
-        return retrieveOrder
-    } else {
-        throw new Error(`Order : ${orderId} not registered in the base.`)
-    }
-
-    }catch(error) {
-      if(error instanceof Error)
-          throw new Error(`Cannot find the order. Details: ${error.message}`)
-      throw new Error(`Cannot find the order. Details ${error}`)
-    }
+  async retrieveById(id: number): Promise<Order | null> {
+    const order = await this.repository
+    .findOne({where: { id }})
+    return order;
   }
 }
 

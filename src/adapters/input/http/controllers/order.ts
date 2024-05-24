@@ -33,9 +33,18 @@ export class OrderController implements OrderControllerPort {
         console.error("Error creating order: ", error);
         return res.status(500).json({ message: "Internal Server Error" });
       }
-
-
     }
+
+    async getOrderById(req: Request, res Response): Promise<Response> {
+      try{
+        const orderId = Number(req.params.id)
+        const response = await this.orderService.getById(orderId)
+        // TODO continuar daqui....
+
+
+      }
+    }
+
 }
 
 export const provideOrderController = new OrderController()

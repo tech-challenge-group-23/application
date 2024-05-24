@@ -26,17 +26,10 @@ export class OrderService implements OrderServicePort {
       }
   }
 
-  async getById(orderId:number): Promise<Order> {
-    try{
-      const result = await this.orderRepository.retrieveById(orderId);
+  async getById(orderId:number): Promise<Order | null> {
+    const result = await this.orderRepository.retrieveById(orderId);
+    !result && console.info(`Order id: ${orderId} not found in database`)
       return result
-
-    } catch(error) {
-        if(error instanceof Error)
-          throw new Error(`An error occurred while trying to obtain the order. Details: ${error.message}`)
-
-      throw new Error(`An error occurred while trying to obtain the order. Details: ${error}`)
-    }
   }
 
   private generateNewOrder(orderRequest: OrderRequest): Order {
