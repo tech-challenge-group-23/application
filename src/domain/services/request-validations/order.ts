@@ -1,6 +1,6 @@
-import { OrderRequest, OrderStatus } from "@/domain/entities/order"
+import { NewOrderRequest, OrderStatus } from "@/domain/entities/order"
 
-export function validateOrderRequest(request: OrderRequest, isCustomer: boolean): string[] {
+export function validateOrderRequest(request: NewOrderRequest, isCustomer: boolean): string[] {
   const errors: string[] = [];
 
   if (request.customer_id == null) {
@@ -15,12 +15,10 @@ export function validateOrderRequest(request: OrderRequest, isCustomer: boolean)
     errors.push('command is mandatory')
   }
 
-  if (request.order_status == null) {
-    errors.push('orderStatus is mandatory')
-  }
-
   const invalidOrderStatusError = validateOrderStatus(request.order_status);
-  invalidOrderStatusError && errors.push(invalidOrderStatusError);
+  if(invalidOrderStatusError.length > 0){
+    errors.concat(invalidOrderStatusError);
+  }
 
   if (request.total_price == null) {
     errors.push('totalPrice is mandatory')
@@ -33,10 +31,17 @@ export function validateOrderRequest(request: OrderRequest, isCustomer: boolean)
   return errors
 }
 
-export function validateOrderStatus(status?: string): string | undefined {
-  if(status != null && !isOrderStatus(status)){
-    return 'invalid value for order_status'
+export function validateOrderStatus(status?: string): string[] {
+  const errors: string[] = [];
+
+  if (status == null) {
+    errors.push('orderStatus is mandatory');
   }
+
+  if(status != null && !isOrderStatus(status)){
+    errors.push('invalid value for order_status');
+  }
+  return errors
 }
 
 function isOrderStatus(status: string): boolean {

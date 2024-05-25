@@ -1,6 +1,6 @@
 import { OrderRepositoryPort } from "@/ports/postgres/order";
 import { OrderServicePort } from "@/ports/services/order";
-import { Order, OrderItem, OrderItemRequest, OrderRequest, OrderStatus, OrderUpdateInfo} from "../entities/order";
+import { Order, OrderItem, OrderItemRequest, NewOrderRequest, OrderStatus, OrderUpdateInfo, UpdateOrderRequest} from "../entities/order";
 import { provideOrderRepository } from "@/adapters/output/postgres/order";
 
 export class OrderService implements OrderServicePort {
@@ -10,13 +10,11 @@ export class OrderService implements OrderServicePort {
       this.orderRepository = provideOrderRepository
   }
 
-  async create(request: OrderRequest): Promise<Order> {
+  async create(request: NewOrderRequest): Promise<Order> {
 
     const newOrder = this.generateNewOrder(request);
       try{
           const result = await this.orderRepository.save(newOrder);
-
-
           return result;
 
       } catch(error) {
@@ -34,16 +32,7 @@ export class OrderService implements OrderServicePort {
 
   async findByFilters(orderStatus?: string, customerId?: number): Promise<Order[] | null> {
     try{
-      let statusEnum: OrderStatus | undefined;
-
-      if(orderStatus) {
-        statusEnum = this.getOrderStatus(orderStatus);
-
-        if(!statusEnum){
-          throw new Error(`Invalid order status: ${orderStatus}`);
-        }
-      }
-
+    const statusEnum = orderStatus ? this.getOrderStatus(orderStatus) : undefined;
     return await this.orderRepository.retrieveByFilters(statusEnum, customerId);
 
     }catch(error) {
@@ -51,11 +40,24 @@ export class OrderService implements OrderServicePort {
     }
   }
 
-  private generateNewOrder(orderRequest: OrderRequest): Order {
-    const orderStatusEnum = this.getOrderStatus(orderRequest.order_status);
-    if(!orderStatusEnum){
-      throw new Error(`Invalid order status: ${orderRequest.order_status}`);
+  async updateStatus(request: UpdateOrderRequest): Promise<void> {
+    try{
+      const statusEnum = this.getOrderStatus(request.order_status);
+      const order = await this.getById(request.order_id);
+
+      if(order){
+        order.orderStatus = statusEnum;
+        order.orderUpdatedAt = this.appendOrderUpdateAt(statusEnum, order.orderUpdatedAt)
+        await this.orderRepository.update(order);
+      }
+
+    }catch(error) {
+      throw new Error(`Error in update order's status: ${error}`);
     }
+  }
+
+  private generateNewOrder(orderRequest: NewOrderRequest): Order {
+    const orderStatusEnum = this.getOrderStatus(orderRequest.order_status);
 
     const order: Order = {
       customerId: orderRequest.customer_id,
@@ -77,11 +79,10 @@ export class OrderService implements OrderServicePort {
       orderUpdatedAt: this.appendOrderUpdateAt(orderStatusEnum),
       createdAt: new Date()
     }
-
     return order
   }
 
-  private getOrderStatus(status: string): OrderStatus | undefined {
+  private getOrderStatus(status: string): OrderStatus {
     switch (status) {
       case 'recebido':
         return OrderStatus.Received;
@@ -91,6 +92,8 @@ export class OrderService implements OrderServicePort {
         return OrderStatus.Ready;
       case 'finalizado':
         return OrderStatus.Finished;
+      default:
+        throw new Error(`Invalid order status: ${status}`);
     }
   }
 

@@ -20,7 +20,7 @@ export class OrderRepository implements OrderRepositoryPort {
           orderUpdatedAt: order.orderUpdatedAt,
           createdAt: order.createdAt}
       ])
-      .returning(['id', 'customerId', 'command', 'orderStatus', 'totalPrice', 'items'])
+      .returning(['id', 'customerId', 'command', 'orderStatus', 'totalPrice', 'items', 'orderUpdatedAt', 'createdAt' ])
       .execute()
 
       return insertOrder.raw[0]
@@ -64,6 +64,27 @@ export class OrderRepository implements OrderRepositoryPort {
         .getMany();
     }
     return null
+  }
+
+  async update(order: Order): Promise<void> {
+    try{
+      await AppDataSource
+      .createQueryBuilder()
+      .update(Order)
+      .set({
+        command: order.command,
+        orderStatus: order.orderStatus,
+        totalPrice: order.totalPrice,
+        items: order.items,
+        orderUpdatedAt: order.orderUpdatedAt})
+        .where('orders.id = :id', { id: order.id })
+        .execute();
+
+    } catch(error) {
+      if(error instanceof Error)
+        throw new Error(`Cannot update the order. Details: ${error.message}`)
+    throw new Error(`Cannot update the order. Details: ${error}`)
+    }
   }
 }
 
