@@ -1,6 +1,7 @@
 import { Product } from '@/domain/entities/product';
 import { ProductRepositoryPort } from '@/ports/postgres/product';
 import { AppDataSource } from '@/adapters/output/index';
+import { DefaultResponse } from '@/ports/utils/response';
 
 export class ProductRepository implements ProductRepositoryPort {
   async save(product: Product): Promise<number | undefined> {
@@ -50,10 +51,7 @@ export class ProductRepository implements ProductRepositoryPort {
     }
   }
 
-  async edit(
-    productId: number,
-    product: Partial<Product>,
-  ): Promise<{ message: string; status: number }> {
+  async edit(productId: number, product: Partial<Product>): Promise<DefaultResponse> {
     try {
       const productRepository = AppDataSource.getRepository(Product);
       const response = await productRepository.update({ id: productId }, product);
