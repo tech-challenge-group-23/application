@@ -33,7 +33,6 @@ export class ProductController implements ProductControllerPort {
 
       return res.sendStatus(201);
     } catch (error) {
-      console.log(error);
       if (error instanceof Error) {
         return res.sendStatus(500);
       }
@@ -79,7 +78,6 @@ export class ProductController implements ProductControllerPort {
 
       return res.sendStatus(200);
     } catch (error) {
-      console.log(error);
       if (error instanceof Error) {
         return res.sendStatus(500);
       }
@@ -97,7 +95,6 @@ export class ProductController implements ProductControllerPort {
 
       return res.status(200).json(serviceRes.products);
     } catch (error) {
-      console.log(error);
       if (error instanceof Error) {
         return res.sendStatus(500);
       }

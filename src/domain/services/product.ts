@@ -46,7 +46,6 @@ export class ProductService implements ProductServicePort {
 
       return { isValid: true, wasFound: true };
     } catch (error) {
-      console.log(error);
       if (error instanceof Error) {
         return { errorMessage: error.message };
       }
@@ -84,7 +83,6 @@ export class ProductService implements ProductServicePort {
 
       return { isValid: true, products: products };
     } catch (error) {
-      console.log(error);
       if (error instanceof Error) {
         return { errorMessage: error.message };
       }
@@ -124,7 +122,6 @@ export class ProductService implements ProductServicePort {
 
       return { isValid: true };
     } catch (error) {
-      console.log(error);
       if (error instanceof Error) {
         return { errorMessage: error.message };
       }

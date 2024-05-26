@@ -19,10 +19,4 @@ export class Customer {
 
   @CreateDateColumn()
   created_at?: Date;
-
-  // constructor(name: string, cpf: string, email: string) {
-  //     this.name = name;
-  //     this.cpf = cpf;
-  //     this.email = email;
-  // }
 }
