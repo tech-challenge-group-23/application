@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
 
-@Entity({name: "products"})
+@Entity({ name: 'products' })
 export class Product {
   @PrimaryGeneratedColumn()
   id?: number;
@@ -9,19 +9,18 @@ export class Product {
   categoryId!: number;
 
   @Column({
-    unique: true
+    unique: true,
   })
   name!: string;
 
   @Column({
     nullable: true,
-    type: "text"
-
-   })
+    type: 'text',
+  })
   description?: string;
 
-  @Column("numeric", {
-    scale: 2
+  @Column('numeric', {
+    scale: 2,
   })
   price!: number;
 

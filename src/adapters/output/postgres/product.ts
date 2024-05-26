@@ -32,13 +32,13 @@ export class ProductRepository implements ProductRepositoryPort {
   async delete(productId: number): Promise<boolean> {
     try {
       const deleteProduct = await AppDataSource.createQueryBuilder()
-      .delete()
-      .from(Product)
-      .where("id = :id", { id: productId })
-      .execute()
+        .delete()
+        .from(Product)
+        .where('id = :id', { id: productId })
+        .execute();
 
       if (deleteProduct.affected === 0) {
-          return false
+        return false;
       }
 
       return true;
@@ -50,14 +50,40 @@ export class ProductRepository implements ProductRepositoryPort {
     }
   }
 
+  async edit(
+    productId: number,
+    product: Partial<Product>,
+  ): Promise<{ message: string; status: number }> {
+    try {
+      const productRepository = AppDataSource.getRepository(Product);
+      const response = await productRepository.update({ id: productId }, product);
+
+      if (response.affected) {
+        return {
+          message: `Product ${productId} has been updated successfully`,
+          status: 200,
+        };
+      }
+
+      return {
+        message: `Product ${productId} was not updated`,
+        status: 404,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(`Error when trying to update product: ${error.message}`);
+      }
+      throw new Error(`Error updating product: ${error}`);
+    }
+  }
+
   async listByCategory(categoryId: number): Promise<Product[]> {
     try {
-
-      const listProductByCategory = await AppDataSource
-      .createQueryBuilder()
-      .select("products")
-      .from(Product, "products")
-      .where("products.categoryId = :categoryId", { categoryId: categoryId }).getMany()
+      const listProductByCategory = await AppDataSource.createQueryBuilder()
+        .select('products')
+        .from(Product, 'products')
+        .where('products.categoryId = :categoryId', { categoryId: categoryId })
+        .getMany();
 
       return listProductByCategory;
     } catch (error) {
