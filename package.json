@@ -12,6 +12,7 @@
     "types": "tsc --noEmit",
     "dev": "node --env-file=.env.dev -r \"@swc/register\" \"src/adapters/input/http/index.ts\"",
     "dev:watch": "node --env-file=.env.dev -r \"@swc/register\" --watch \"src/adapters/input/http/index.ts\"",
+    "swagger": "node --env-file=.env.dev -r \"@swc/register\" \"src/swagger.ts\"",
     "build": "npm run clean && npm run types && swc src -d dist",
     "migrate:up": "node --env-file=.env.dev node_modules/migrate/bin/migrate up --compiler=\"ts:@swc/register\"",
     "migrate:down": "node --env-file=.env.dev node_modules/migrate/bin/migrate down --compiler=\"ts:@swc/register\""
@@ -41,11 +42,13 @@
     "jest": "^29.7.0",
     "prettier": "^3.2.5",
     "rimraf": "^5.0.5",
+    "swagger-autogen": "^2.23.7",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",
     "typescript": "^5.4.5"
   },
   "dependencies": {
+    "body-parser": "^1.20.2",
     "email-validator": "^2.0.4",
     "express": "^4.19.2",
     "migrate": "^2.1.0",
