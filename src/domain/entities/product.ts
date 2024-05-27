@@ -22,6 +22,10 @@ export class Product {
 
   @Column('numeric', {
     scale: 2,
+    transformer: {
+      from: (value) => (value === null ? null : Number(value)),
+      to: (value) => value,
+    },
   })
   price!: number;
 
