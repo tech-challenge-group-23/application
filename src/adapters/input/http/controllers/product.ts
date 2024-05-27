@@ -6,11 +6,11 @@ import { provideProductService } from "@/domain/services/product"
 
 export class ProductController implements ProductControllerPort {
     private productService: ProductServicePort
-    
+
     constructor() {
       this.productService = provideProductService
     }
-  
+
     async createProduct(req: Request, res: Response): Promise<Response>  {
       try {
         const product: Product = {
@@ -33,7 +33,6 @@ export class ProductController implements ProductControllerPort {
 
       return res.sendStatus(201)
       } catch (error) {
-        console.log(error)
         if (error instanceof Error){
           return res.sendStatus(500)
         }
@@ -59,7 +58,6 @@ export class ProductController implements ProductControllerPort {
 
         return res.sendStatus(200)
       } catch (error) {
-        console.log(error)
         if (error instanceof Error){
           return res.sendStatus(500)
         }
@@ -77,7 +75,6 @@ export class ProductController implements ProductControllerPort {
 
         return res.status(200).json(serviceRes.products)
       } catch (error) {
-        console.log(error)
         if (error instanceof Error){
           return res.sendStatus(500)
         }
@@ -87,4 +84,3 @@ export class ProductController implements ProductControllerPort {
   }
 
   export const provideProductController = new ProductController();
-
