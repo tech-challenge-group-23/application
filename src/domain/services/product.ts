@@ -20,12 +20,11 @@ import { isNull, isInt, isString, validation } from "aux/helpers/validation";
         if (!productValited.isValid) {
           return {created: false, isValid: productValited.isValid, message: productValited.message}
         }
-  
+
         await this.productRepo.save(product)
 
         return {created: true, isValid: productValited.isValid}
       } catch (error) {
-        console.log(error)
         if (error instanceof Error) {
           return {errorMessage: error.message}
         }
@@ -38,7 +37,7 @@ import { isNull, isInt, isString, validation } from "aux/helpers/validation";
         if (isNaN(productId)) {
           return {isValid: false}
         }
-  
+
         const repoRes = await this.productRepo.delete(productId)
 
         if (!repoRes) {
@@ -47,7 +46,6 @@ import { isNull, isInt, isString, validation } from "aux/helpers/validation";
 
         return {isValid: true, wasFound: true}
       } catch (error) {
-        console.log(error)
         if (error instanceof Error) {
           return {errorMessage: error.message}
         }
@@ -60,12 +58,11 @@ import { isNull, isInt, isString, validation } from "aux/helpers/validation";
         if (isNaN(categoryId)) {
           return {isValid: false}
         }
-  
+
         const products = await this.productRepo.listByCategory(categoryId)
 
         return {isValid: true, products: products}
       } catch (error) {
-        console.log(error)
         if (error instanceof Error) {
           return {errorMessage: error.message}
         }
@@ -86,7 +83,7 @@ import { isNull, isInt, isString, validation } from "aux/helpers/validation";
             isValid: false,
             message: "invalid name"
           }
-        }        
+        }
         if (product.description !== undefined) {
           if (!isString(product.description)) {
             return {
@@ -102,10 +99,9 @@ import { isNull, isInt, isString, validation } from "aux/helpers/validation";
             message: "invalid price"
           }
         }
-        
+
         return {isValid: true}
       } catch (error) {
-        console.log(error)
         if (error instanceof Error) {
           return {errorMessage: error.message}
         }
@@ -114,4 +110,4 @@ import { isNull, isInt, isString, validation } from "aux/helpers/validation";
     }
   };
 
-  export const provideProductService = new ProductService(); 
+  export const provideProductService = new ProductService();
