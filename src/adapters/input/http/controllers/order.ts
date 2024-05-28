@@ -2,7 +2,7 @@ import { UpdateOrderRequest } from "@/domain/entities/order";
 import { provideOrderService } from "@/domain/services/order";
 import { OrderControllerPort } from "@/ports/controllers/order";
 import { OrderServicePort } from "@/ports/services/order";
-import { validateOrderRequest, validateOrderStatus} from "@/domain/services/request-validations/order";
+import { validateOrderRequest, validateOrderStatus} from "@/adapters/input/http/controllers";
 import { Request, Response } from "express";
 import { CustomerServicePort } from "@/ports/services/customer";
 import { provideCustomerService } from "@/domain/services/customer";

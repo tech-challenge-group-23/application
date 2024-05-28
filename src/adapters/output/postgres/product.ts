@@ -1,7 +1,6 @@
 import { Product } from '@/domain/entities/product';
 import { ProductRepositoryPort } from '@/ports/postgres/product';
 import { AppDataSource } from '@/adapters/output/index';
-import { DefaultHttpResponse } from '@/ports/utils/response';
 
 export class ProductRepository implements ProductRepositoryPort {
   async save(product: Product): Promise<number | undefined> {
@@ -51,22 +50,11 @@ export class ProductRepository implements ProductRepositoryPort {
     }
   }
 
-  async edit(productId: number, product: Partial<Product>): Promise<DefaultHttpResponse> {
+  async edit(productId: number, product: Partial<Product>): Promise<void> {
     try {
       const productRepository = AppDataSource.getRepository(Product);
-      const response = await productRepository.update({ id: productId }, product);
+      await productRepository.update({ id: productId }, product);
 
-      if (response.affected) {
-        return {
-          message: `Product ${productId} has been updated successfully`,
-          status: 200,
-        };
-      }
-
-      return {
-        message: `Product ${productId} was not updated`,
-        status: 404,
-      };
     } catch (error) {
       if (error instanceof Error) {
         throw new Error(`Error when trying to update product: ${error.message}`);
@@ -109,6 +97,22 @@ export class ProductRepository implements ProductRepositoryPort {
         throw new Error(`Error checking existence product: ${error.message}`);
       }
       throw new Error(`Error checking existence product: ${error}`);
+    }
+  }
+
+  async getById(id: number): Promise<Product | null>{
+    try{
+      const product = await AppDataSource.createQueryBuilder().retrieveById(id);
+
+    !product && console.info(`[INFO] Product id ${id} was not found in the database`)
+      return product
+
+    } catch(error) {
+      if (error instanceof Error) {
+        throw new Error(`Error getting product by id: ${error.message}`);
+      }
+      throw new Error(`Error getting product by id: ${error}`);
+
     }
   }
 }

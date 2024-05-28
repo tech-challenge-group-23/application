@@ -4,6 +4,7 @@ import { Product } from '@/domain/entities/product';
 import { Request, Response } from 'express';
 import { provideProductService } from '@/domain/services/product';
 import { DefaultHttpResponse } from '@/ports/utils/response';
+import { validateUpdateRequest } from '@/adapters/input/http/controllers/product'
 
 export class ProductController implements ProductControllerPort {
   private productService: ProductServicePort;
@@ -41,10 +42,15 @@ export class ProductController implements ProductControllerPort {
     }
   }
 
-  async editProduct(req: Request, res: Response): Promise<any> {
+  async editProduct(req: Request, res: Response): Promise<Response> {
     try {
       const id = Number(req.params.id);
       const product: Partial<Product> = req.body;
+
+      const validationErrors = validateUpdateRequest(req);
+      if (validationErrors.length > 0) {
+        return res.status(400).json({ errors: validationErrors });
+      }
 
       if (req.file) {
         product.image = req.file.buffer;
@@ -52,7 +58,15 @@ export class ProductController implements ProductControllerPort {
 
       const productResponse = await this.productService.edit(id, product);
 
-      return res.status(productResponse.status).send({ message: productResponse.message });
+      if(productResponse.errorMessage){
+        return res.status(500).json({ errors: "An unexpected error occurred" })
+      }
+
+      if(!productResponse.wasFound){
+        return res.status(404).json({ errors: productResponse.message })
+      }
+
+      return res.status(200);
     } catch (error) {
       if (error instanceof Error) {
         return res.sendStatus(500);

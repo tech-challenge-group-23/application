@@ -2,7 +2,7 @@ import { Customer } from "@/domain/entities/customer";
 import { provideCustomerService } from "@/domain/services/customer";
 import { CustomerControllerPort } from "@/ports/controllers/customer";
 import { CustomerServicePort } from "@/ports/services/customer";
-import { validateCustomerName, validationCpf, validationCustomerRequest } from "@/domain/services/request-validations/customer"
+import { validateCustomerName, validationCpf, validationCustomerRequest } from "@/adapters/input/http/controllers"
 import { Request, Response } from "express";
 
 
@@ -12,10 +12,6 @@ export class CustomerController implements CustomerControllerPort {
     constructor() {
         this.customerService = provideCustomerService
     }
-
-    // TO DO: add rotas customer no swagger
-    // TO DO: add rota customer/getAll()???
-    // TO DO: add rota customer/getById()???
 
     async createCustomer(req: Request, res: Response): Promise<Response> {
 
