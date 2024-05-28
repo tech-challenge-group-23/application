@@ -198,7 +198,7 @@
         "description": "This endpoint will return the order by customer and by status.",
         "parameters": [
           {
-            "name": "order_status",
+            "name": "customer_id",
             "in": "query",
             "required": true,
             "schema": {
@@ -206,11 +206,12 @@
             }
           },
           {
-            "name": "customer_id",
+            "name": "order_status",
             "in": "query",
             "required": true,
+            "description": "Status for orders.",
             "schema": {
-              "type": "string"
+              "$ref": "#/components/schemas/orderStatusEnum"
             }
           }
         ],
@@ -317,6 +318,14 @@
             "required": true,
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "order_status",
+            "in": "body",
+            "description": "Status for orders.",
+            "schema": {
+              "$ref": "#/components/schemas/orderStatusEnum"
             }
           }
         ],
@@ -615,6 +624,15 @@
           "items",
           "orderUpdatedAt",
           "createdAt"
+        ]
+      },
+      "orderStatusEnum": {
+        "type": "string",
+        "enum": [
+          "recebido",
+          "em preparação",
+          "pronto",
+          "finalizado"
         ]
       }
     },

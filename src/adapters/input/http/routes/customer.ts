@@ -13,6 +13,17 @@ customerRoutes.post("/", (req: Request, res: Response) => {
     #swagger.security = [{
         "bearerAuth": []
     }]
+
+    #swagger.requestBody = {
+      required: true,
+      content: {
+        "application/json": {
+          schema: {
+            $ref: "#/components/schemas/customerBody"
+          }
+        }
+      }
+    }
   */
 
   provideCustomerController.createCustomer(req, res)});

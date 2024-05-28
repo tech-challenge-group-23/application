@@ -16,6 +16,17 @@ productRoutes.post("/", upload.single('image'), (req: Request, res: Response) =>
     #swagger.security = [{
         "bearerAuth": []
     }]
+
+    #swagger.requestBody = {
+      required: true,
+      content: {
+        "*": {
+          schema: {
+            $ref: "#/components/schemas/productBody"
+          }
+        }
+      }
+    }
   */
   provideProductController.createProduct(req, res)});
 

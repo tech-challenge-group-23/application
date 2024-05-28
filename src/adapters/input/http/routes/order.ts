@@ -12,6 +12,14 @@ orderRoutes.get("/",  (req: Request, res: Response) => {
     #swagger.security = [{
         "bearerAuth": []
     }]
+
+    #swagger.parameters['order_status'] = {
+      in: 'query',
+      description: 'Status for orders.',
+      schema: {
+        $ref: '#/components/schemas/orderStatusEnum'
+      }
+    }
   */
   provideOrderController.getOrders(req, res)});
 
@@ -36,6 +44,17 @@ orderRoutes.post("/", (req: Request, res: Response) => {
     #swagger.security = [{
         "bearerAuth": []
     }]
+
+    #swagger.requestBody = {
+      required: true,
+      content: {
+        "application/json": {
+          schema: {
+            $ref: "#/components/schemas/orderBody"
+          }
+        }
+      }
+    }
   */
   provideOrderController.createOrder(req, res)});
 
@@ -48,5 +67,13 @@ orderRoutes.put("/:id/status",  (req: Request, res: Response) => {
     #swagger.security = [{
         "bearerAuth": []
     }]
+
+    #swagger.parameters['order_status'] = {
+      in: 'body',
+      description: 'Status for orders.',
+      schema: {
+        $ref: '#/components/schemas/orderStatusEnum'
+      }
+    }
   */
   provideOrderController.updateStatus(req, res)});

@@ -79,6 +79,14 @@ const doc = {
                 ],
                 $orderUpdatedAt: "2024-05-28T01:25:58.453Z",
                 $createdAt: "2024-05-28T01:28:58.453Z"
+            },
+            orderStatusEnum: {
+                '@enum': [
+                    "recebido",
+                    "em preparação",
+                    "pronto",
+                    "finalizado"
+                ]
             }
         },
         securitySchemes: {
