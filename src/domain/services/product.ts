@@ -3,7 +3,7 @@ import { Product, ProductServiceResponse } from '../entities/product';
 import { ProductServicePort } from '@/ports/services/product';
 import { provideProductRepository } from '@/adapters/output/postgres/product';
 import { isNull, isInt, isString, validation } from 'aux/helpers/validation';
-import { DefaultResponse } from '@/ports/utils/response';
+import { DefaultHttpResponse } from '@/ports/utils/response';
 
 export class ProductService implements ProductServicePort {
   private productRepo: ProductRepositoryPort;
@@ -33,7 +33,7 @@ export class ProductService implements ProductServicePort {
     }
   }
 
-  async delete(productId: number): Promise<DefaultResponse> {
+  async delete(productId: number): Promise<DefaultHttpResponse> {
     try {
       if (isNaN(productId)) {
         return {
@@ -63,7 +63,7 @@ export class ProductService implements ProductServicePort {
     }
   }
 
-  async edit(productId: number, product: Partial<Product>): Promise<DefaultResponse> {
+  async edit(productId: number, product: Partial<Product>): Promise<DefaultHttpResponse> {
     try {
       const productRepo = await this.productRepo.edit(productId, product);
 

@@ -3,7 +3,7 @@ import { ProductServicePort } from '@/ports/services/product';
 import { Product } from '@/domain/entities/product';
 import { Request, Response } from 'express';
 import { provideProductService } from '@/domain/services/product';
-import { DefaultResponse } from '@/ports/utils/response';
+import { DefaultHttpResponse } from '@/ports/utils/response';
 
 export class ProductController implements ProductControllerPort {
   private productService: ProductServicePort;
@@ -85,8 +85,8 @@ export class ProductController implements ProductControllerPort {
       }
 
       return res
-        .status((error as DefaultResponse).status)
-        .send({ message: (error as DefaultResponse).message });
+        .status((error as DefaultHttpResponse).status)
+        .send({ message: (error as DefaultHttpResponse).message });
     }
   }
 }
