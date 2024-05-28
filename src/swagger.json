@@ -107,7 +107,7 @@
         "requestBody": {
           "required": true,
           "content": {
-            "*": {
+            "multipart/form-data": {
               "schema": {
                 "$ref": "#/components/schemas/productBody"
               }
@@ -419,7 +419,15 @@
         "type": "object",
         "properties": {
           "categoryId": {
-            "type": "number",
+            "type": "string",
+            "format": "smallint",
+            "description": "Enum values: 1: lanche, 2: acompanhamento, 3: bebida, 4: sobremesa",
+            "enum": [
+              1,
+              2,
+              3,
+              4
+            ],
             "example": 1
           },
           "name": {
@@ -431,12 +439,12 @@
             "example": "descrição"
           },
           "price": {
-            "type": "number",
+            "type": "string",
             "example": 30.5
           },
           "image": {
             "type": "string",
-            "example": "bytea.jpeg"
+            "format": "binary"
           }
         },
         "required": [
