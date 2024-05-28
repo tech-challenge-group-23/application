@@ -5,8 +5,8 @@ const swaggerAutogen = require('swagger-autogen')({ openapi: '3.0.0' });
 const doc = {
     info: {
         version: "1.0.0",
-        title: "My API",
-        description: "Some description..."
+        title: "API - Tech Challenge",
+        description: "API - Tech Challenge"
     },
     servers: [
         {
@@ -16,7 +16,6 @@ const doc = {
     components: {
         schemas: {
             customerBody: {
-                id: 1,
                 $name: "Gisele Cesar",
                 $cpf: "12345678910",
                 $email: "teste@email.com",
@@ -30,10 +29,11 @@ const doc = {
                 created_at: "2024-05-28T01:25:58.453Z"
             },
             productBody: {
-                categoryId: 1,
-                name: "lanche",
-                description: "descrição",
-                price: 30.50
+                $categoryId: 1,
+                $name: "lanche",
+                $description: "descrição",
+                $price: 30.50,
+                image: "bytea.jpeg"
             },
             producResponse: {
                 id: 1,
@@ -41,21 +41,20 @@ const doc = {
                 name: "lanche",
                 description: "descrição",
                 price: 30.50,
-                image: null,
+                image: "bytea.jpeg",
                 created_at: "2024-05-28T01:25:58.453Z",
                 updated_at: "2024-05-28T01:25:58.453Z"
             },
             orderBody: {
-                id: 1,
-                $customerId: 1,
+                $customer_id: 1,
                 $command: 2,
-                $orderStatus: "recebido",
-                $totalPrice: 30.50,
+                $order_status: "recebido",
+                $total_price: 30.50,
                 $items: [
                     {
-                        productId: 1,
+                        product_id: 1,
                         quantity: 1,
-                        productName: "lanche",
+                        product_name: "lanche",
                         price: 30.50,
                         notes: ""
                     }
@@ -65,15 +64,15 @@ const doc = {
             },
             orderResponse: {
                 id: 1,
-                customerId: 1,
+                customer_id: 1,
                 $command: 2,
-                $orderStatus: "recebido",
-                $totalPrice: 30.50,
+                $order_status: "recebido",
+                $total_price: 30.50,
                 $items: [
                     {
-                        productId: 1,
+                        product_id: 1,
                         quantity: 1,
-                        productName: "lanche",
+                        product_name: "lanche",
                         price: 30.50,
                         notes: ""
                     }
