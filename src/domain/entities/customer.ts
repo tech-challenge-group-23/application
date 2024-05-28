@@ -11,6 +11,7 @@ export class Customer {
 
   @Column({
     length: 11,
+    unique: true
   })
   cpf!: string;
 
