@@ -2,7 +2,7 @@ import express from 'express';
 import cors from './middlewares/cors';
 import morgan from 'morgan';
 import { APP_PORT } from '../../../env';
-import { productRoutes } from '@/adapters/input/http/routes/product'
+import productRoutes from '@/adapters/input/http/routes/product';
 import { customerRoutes } from './routes/customer';
 import { orderRoutes } from './routes/order';
 
@@ -13,7 +13,6 @@ app.use(cors());
 app.use(morgan(':method :url :status :response-time ms - :res[content-length]'));
 
 app.use('/products', productRoutes);
-
 app.use('/customers', customerRoutes);
 
 app.use('/orders', orderRoutes);
@@ -25,5 +24,5 @@ export function initApp() {
 }
 
 module.exports = {
-  initApp: initApp()
+  initApp: initApp(),
 };

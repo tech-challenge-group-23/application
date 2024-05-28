@@ -1,6 +1,7 @@
+import { TableName } from '@/ports/utils/enums';
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn } from 'typeorm';
 
-@Entity({name: "customers"})
+@Entity({ name: TableName.CUSTOMER })
 export class Customer {
   @PrimaryGeneratedColumn()
   id?: number;

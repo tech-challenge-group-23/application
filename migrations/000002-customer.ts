@@ -24,6 +24,6 @@ export async function up() {
 
 export async function down() {
   await client.connect();
-  await client.query(`DROP TABLE IF EXISTS "customers";`);
+  await client.query(`DROP TABLE IF EXISTS "customers" CASCADE;`);
   await client.end();
 }
