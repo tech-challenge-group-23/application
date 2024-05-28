@@ -33,22 +33,31 @@ export class ProductService implements ProductServicePort {
     }
   }
 
-  async delete(productId: number): Promise<ProductServiceResponse> {
+  async delete(productId: number): Promise<DefaultResponse> {
     try {
       if (isNaN(productId)) {
-        return { isValid: false };
+        return {
+          message: 'Product ID must be a number',
+          status: 400,
+        };
       }
 
       const repoRes = await this.productRepo.delete(productId);
 
       if (!repoRes) {
-        return { isValid: true, wasFound: false };
+        return {
+          message: `product ${productId} was not found`,
+          status: 404,
+        };
       }
 
-      return { isValid: true, wasFound: true };
+      return {
+        message: 'Product deleted successfully',
+        status: 200,
+      };
     } catch (error) {
       if (error instanceof Error) {
-        return { errorMessage: error.message };
+        return { message: error.message, status: 500 };
       }
       throw error;
     }
@@ -71,19 +80,23 @@ export class ProductService implements ProductServicePort {
     }
   }
 
-  async listByCategory(categoryId: number): Promise<ProductServiceResponse> {
+  async listByCategory(categoryId: number): Promise<{ products: Product[] }> {
     try {
       if (isNaN(categoryId)) {
-        return { isValid: false };
+        throw {
+          message: 'Product ID must be a number',
+          status: 400,
+        };
       }
 
       const products = await this.productRepo.listByCategory(categoryId);
 
-      return { isValid: true, products: products };
+      return { products };
     } catch (error) {
       if (error instanceof Error) {
-        return { errorMessage: error.message };
+        throw new Error(error.message);
       }
+
       throw error;
     }
   }

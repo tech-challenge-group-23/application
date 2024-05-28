@@ -1,7 +1,7 @@
 import { TableName } from '@/ports/utils/enums';
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
 
-@Entity({ name: TableName.CUSTOMER })
+@Entity({ name: TableName.PRODUCT })
 export class Product {
   @PrimaryGeneratedColumn()
   id?: number;

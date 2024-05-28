@@ -3,6 +3,7 @@ import { ProductServicePort } from '@/ports/services/product';
 import { Product } from '@/domain/entities/product';
 import { Request, Response } from 'express';
 import { provideProductService } from '@/domain/services/product';
+import { DefaultResponse } from '@/ports/utils/response';
 
 export class ProductController implements ProductControllerPort {
   private productService: ProductServicePort;
@@ -64,22 +65,10 @@ export class ProductController implements ProductControllerPort {
     try {
       const serviceRes = await this.productService.delete(Number(req.params.id));
 
-      if (serviceRes.errorMessage !== undefined) {
-        return res.status(500).send(serviceRes);
-      }
-
-      if (!serviceRes.isValid) {
-        return res.sendStatus(400);
-      }
-
-      if (!serviceRes.wasFound) {
-        return res.sendStatus(404);
-      }
-
-      return res.sendStatus(200);
+      return res.status(serviceRes.status).send({ message: serviceRes.message });
     } catch (error) {
       if (error instanceof Error) {
-        return res.sendStatus(500);
+        return res.sendStatus(500).send({ message: 'internal server error' });
       }
       throw error;
     }
@@ -89,16 +78,15 @@ export class ProductController implements ProductControllerPort {
     try {
       const serviceRes = await this.productService.listByCategory(Number(req.params.id));
 
-      if (!serviceRes.isValid) {
-        return res.sendStatus(400);
-      }
-
       return res.status(200).json(serviceRes.products);
     } catch (error) {
       if (error instanceof Error) {
-        return res.sendStatus(500);
+        return res.status(500).send({ message: error.message });
       }
-      throw error;
+
+      return res
+        .status((error as DefaultResponse).status)
+        .send({ message: (error as DefaultResponse).message });
     }
   }
 }

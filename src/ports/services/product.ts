@@ -3,7 +3,7 @@ import { DefaultResponse } from '../utils/response';
 
 export interface ProductServicePort {
   create(product: Product): Promise<ProductServiceResponse>;
-  delete(productId: number): Promise<ProductServiceResponse>;
+  delete(productId: number): Promise<DefaultResponse>;
   edit(productId: number, product: Partial<Product>): Promise<DefaultResponse>;
-  listByCategory(categoryId: number): Promise<ProductServiceResponse>;
+  listByCategory(categoryId: number): Promise<{ products: Product[] }>;
 }
