@@ -33,11 +33,19 @@ export class CustomerService implements CustomerServicePort {
         try{
             const result = await this.customerRepository.searchByCpf(cpf)
             return result
+
         } catch(error) {
             if(error instanceof Error)
                 throw new Error(`Error when searching for cpf: ${error.message}`)
+
             throw new Error(`Error when searching for cpf: ${error}`)
         }
+    }
+
+    async searchById(id: number): Promise<Customer | null> {
+        const result = await this.customerRepository.searchById(id)
+        !result && console.info(`[INFO] Customer id ${id} was not found in the database`)
+        return result
     }
 }
 

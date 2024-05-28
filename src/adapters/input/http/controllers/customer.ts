@@ -2,7 +2,7 @@ import { Customer } from "@/domain/entities/customer";
 import { provideCustomerService } from "@/domain/services/customer";
 import { CustomerControllerPort } from "@/ports/controllers/customer";
 import { CustomerServicePort } from "@/ports/services/customer";
-import { validateCustomerName, validationCpf, validationCustomerRequest } from "@/domain/services/customer-validations/request-validation";
+import { validateCustomerName, validationCpf, validationCustomerRequest } from "@/domain/services/request-validations/customer"
 import { Request, Response } from "express";
 
 
