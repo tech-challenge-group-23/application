@@ -4,8 +4,7 @@ export enum OrderStatus {
   Received = 'recebido',
   Preparing = 'em preparação',
   Ready = 'pronto',
-  Finished = 'finalizado',
-  Unknown = ''
+  Finished = 'finalizado'
 }
 
 export type OrderItem = {
@@ -29,12 +28,17 @@ export type OrderUpdateInfo = {
   updatedAt: Date
 }
 
-export type OrderRequest = {
+export type NewOrderRequest = {
   customer_id: number
   command: number
   order_status: string
   total_price: number
   items: OrderItemRequest[]
+}
+
+export type UpdateOrderRequest = {
+  order_id: number
+  order_status: string
 }
 
 @Entity({name: "orders"})

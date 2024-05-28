@@ -14,9 +14,7 @@ export const AppDataSource = new DataSource({
     database: DATABASE,
     entities: [Customer, Product, Order],
     synchronize: true,
-    logging: ['log', 'error'],
-    // subscribers: [],
-    // migrations: [],
+    logging: ['log', 'error']
 });
 
 AppDataSource.initialize()

@@ -1,8 +1,10 @@
-import { Order } from '@/domain/entities/order'
+import { Order, OrderStatus } from '@/domain/entities/order'
 import { OrderRepositoryPort } from "@/ports/postgres/order";
 import { AppDataSource } from '..';
 
 export class OrderRepository implements OrderRepositoryPort {
+  private repository = AppDataSource.getRepository(Order);
+
   async save(order: Order): Promise<Order> {
     try{
       const insertOrder = await AppDataSource
@@ -18,7 +20,7 @@ export class OrderRepository implements OrderRepositoryPort {
           orderUpdatedAt: order.orderUpdatedAt,
           createdAt: order.createdAt}
       ])
-      .returning(['id', 'customerId', 'command', 'orderStatus', 'totalPrice', 'items'])
+      .returning(['id', 'customerId', 'command', 'orderStatus', 'totalPrice', 'items', 'orderUpdatedAt', 'createdAt' ])
       .execute()
 
       return insertOrder.raw[0]
@@ -30,25 +32,58 @@ export class OrderRepository implements OrderRepositoryPort {
     }
   }
 
-  async retrieveById(orderId: number): Promise<Order> {
-    try{
-      const retrieveOrder = await AppDataSource
-      .createQueryBuilder()
-      .select('order')
-      .from(Order, 'order')
-      .where('order.id = :id', {id: orderId})
-      .getOne()
+  async retrieveById(id: number): Promise<Order | null> {
+    const order = await this.repository
+    .findOne({where: { id }})
+    return order;
+  }
+  async retrieveByFilters(orderStatus?: OrderStatus, customerId?: number): Promise<Order[] | null> {
 
-      if(retrieveOrder?.id) {
-        return retrieveOrder
-    } else {
-        throw new Error(`Order : ${orderId} not registered in the base.`)
+    if (orderStatus && customerId) {
+      return await AppDataSource.createQueryBuilder()
+        .select('orders')
+        .from(Order, 'orders')
+        .where('orders.orderStatus = :orderStatus', { orderStatus: orderStatus })
+        .andWhere('orders.customerId = :customerId', { customerId: customerId })
+        .getMany();
     }
 
-    }catch(error) {
+    if(orderStatus){
+      return await AppDataSource.createQueryBuilder()
+      .select('orders')
+        .from(Order, 'orders')
+        .where('orders.orderStatus = :orderStatus', { orderStatus: orderStatus })
+        .getMany();
+    }
+
+    if(customerId){
+      return await AppDataSource.createQueryBuilder()
+        .select('orders')
+        .from(Order, 'orders')
+        .where('orders.customerId = :customerId', { customerId: customerId })
+        .getMany();
+    }
+    return null
+  }
+
+  async update(order: Order): Promise<void> {
+    try{
+      await AppDataSource
+      .createQueryBuilder()
+      .update(Order)
+      .set({
+        command: order.command,
+        orderStatus: order.orderStatus,
+        totalPrice: order.totalPrice,
+        items: order.items,
+        orderUpdatedAt: order.orderUpdatedAt})
+        .where('orders.id = :id', { id: order.id })
+        .execute();
+
+    } catch(error) {
       if(error instanceof Error)
-          throw new Error(`Cannot find the order. Details: ${error.message}`)
-      throw new Error(`Cannot find the order. Details ${error}`)
+        throw new Error(`Cannot update the order. Details: ${error.message}`)
+    throw new Error(`Cannot update the order. Details: ${error}`)
     }
   }
 }
