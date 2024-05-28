@@ -3,7 +3,7 @@ import { provideProductController } from '@/adapters/input/http/controllers/prod
 import multer from 'multer';
 import ProductValidator from '@/domain/services/product-validation/edit';
 
-const productRoutes = express.Router();
+export const productRoutes = express.Router();
 
 const upload = multer();
 
@@ -24,5 +24,3 @@ productRoutes.put(
 productRoutes.get('/categories/:id', (req: Request, res: Response) => {
   provideProductController.listProductsByCategory(req, res);
 });
-
-export default productRoutes;

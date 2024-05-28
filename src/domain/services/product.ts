@@ -13,7 +13,8 @@ export class ProductService implements ProductServicePort {
 
   async create(product: Product): Promise<ProductServiceResponse> {
     try {
-      const productValited = this.validateProduct(product);
+      const productValited = await this.validateProduct(product);
+
       if (productValited.errorMessage !== undefined) {
         return { errorMessage: productValited.errorMessage };
       }
@@ -101,8 +102,16 @@ export class ProductService implements ProductServicePort {
     }
   }
 
-  private validateProduct(product: Product): validation {
+  private async validateProduct(product: Product): Promise<validation> {
     try {
+      const existsProduct = await this.productRepo.existsProduct(product.name);
+
+      if (existsProduct) {
+        return {isValid: false,
+          message: `product ${product.name} already exists.`
+        }
+      }
+
       if (!isInt(product.categoryId) || product.name == null) {
         return {
           isValid: false,

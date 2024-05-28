@@ -91,6 +91,26 @@ export class ProductRepository implements ProductRepositoryPort {
       throw new Error(`Error listing product: ${error}`);
     }
   }
+
+  async existsProduct(name: string): Promise<boolean> {
+    try {
+      const product = await AppDataSource.createQueryBuilder()
+        .select('products')
+        .from(Product, 'products')
+        .where('products.name = :name', { name: name }).getOne()
+
+        if (product === null) {
+          return false
+        }
+
+      return true;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(`Error checking existence product: ${error.message}`);
+      }
+      throw new Error(`Error checking existence product: ${error}`);
+    }
+  }
 }
 
 export const provideProductRepository = new ProductRepository();

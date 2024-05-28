@@ -2,7 +2,7 @@ import express from 'express';
 import cors from './middlewares/cors';
 import morgan from 'morgan';
 import { APP_PORT } from '../../../env';
-import { productRoutes } from '@/adapters/input/http/routes/product';
+import { productRoutes } from './routes/product';
 import { customerRoutes } from './routes/customer';
 import { orderRoutes } from './routes/order';
 
