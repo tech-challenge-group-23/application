@@ -1,0 +1,625 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "My API",
+    "description": "Some description..."
+  },
+  "paths": {
+    "/customers/": {
+      "post": {
+        "tags": [
+          "Customer"
+        ],
+        "summary": "Returns a created customer.",
+        "description": "This endpoint will return a customer json",
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "example": "any"
+                  },
+                  "cpf": {
+                    "example": "any"
+                  },
+                  "email": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customers/{cpf}": {
+      "get": {
+        "tags": [
+          "Customer"
+        ],
+        "summary": "Returns a customer when searching for cpf.",
+        "description": "This endpoint will return a customer json when searching for cpf.",
+        "parameters": [
+          {
+            "name": "cpf",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/products/": {
+      "post": {
+        "tags": [
+          "Product"
+        ],
+        "summary": "Returns a created product.",
+        "description": "This endpoint will return a product json.",
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "categoryId": {
+                    "example": 1
+                  },
+                  "name": {
+                    "example": "string"
+                  },
+                  "description": {
+                    "example": "string"
+                  },
+                  "price": {
+                    "example": 10.50
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/products/{id}": {
+      "delete": {
+        "tags": [
+          "Product"
+        ],
+        "summary": "Returns a boolean.",
+        "description": "This endpoint will return a boolean for the deleted product.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/products/categories/{id}": {
+      "get": {
+        "tags": [
+          "Product"
+        ],
+        "summary": "Returns the list of products by category.",
+        "description": "This endpoint will return the list of products by category.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/orders/": {
+      "get": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "Returns the order by customer and by status.",
+        "description": "This endpoint will return the order by customer and by status.",
+        "parameters": [
+          {
+            "name": "order_status",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "customer_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "Returns a created order.",
+        "description": "This endpoint will return a order json.",
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "customer_id": {
+                    "example": 1
+                  },
+                  "command": {
+                    "example": 2
+                  },
+                  "order_status": {
+                    "example": "recebido"
+                  },
+                  "total_price": {
+                    "example": 30.50
+                  },
+                  "items": {
+                    "example": [
+                      {
+                        "product_id": 1,
+                        "quantity": 1,
+                        "product_name": "lanche",
+                        "price": 30.50,
+                        "notes": "sem cebola"
+                      }
+                    ]
+                  },
+                  "orderUpdatedAt": {
+                    "example": "2024-05-28T01:25:58.453Z"
+                  },
+                  "createdAt": {
+                    "example": "2024-05-28T01:28:58.453Z"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/orders/{id}": {
+      "get": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "Returns a order by Id.",
+        "description": "This endpoint will return a order by Id.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/orders/{id}/status": {
+      "put": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "Returns the order status change.",
+        "description": "This endpoint will return the order status change.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "order_status": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "customerBody": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "Gisele Cesar"
+          },
+          "cpf": {
+            "type": "string",
+            "example": "12345678910"
+          },
+          "email": {
+            "type": "string",
+            "example": "teste@email.com"
+          },
+          "created_at": {
+            "type": "string",
+            "example": "2024-05-28T01:25:58.453Z"
+          }
+        },
+        "required": [
+          "name",
+          "cpf",
+          "email"
+        ]
+      },
+      "customerResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "Gisele Cesar"
+          },
+          "cpf": {
+            "type": "string",
+            "example": "12345678910"
+          },
+          "email": {
+            "type": "string",
+            "example": "teste@email.com"
+          },
+          "created_at": {
+            "type": "string",
+            "example": "2024-05-28T01:25:58.453Z"
+          }
+        }
+      },
+      "productBody": {
+        "type": "object",
+        "properties": {
+          "categoryId": {
+            "type": "number",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "lanche"
+          },
+          "description": {
+            "type": "string",
+            "example": "descrição"
+          },
+          "price": {
+            "type": "number",
+            "example": 30.5
+          }
+        }
+      },
+      "producResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 1
+          },
+          "categoryId": {
+            "type": "number",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "lanche"
+          },
+          "description": {
+            "type": "string",
+            "example": "descrição"
+          },
+          "price": {
+            "type": "number",
+            "example": 30.5
+          },
+          "image": {},
+          "created_at": {
+            "type": "string",
+            "example": "2024-05-28T01:25:58.453Z"
+          },
+          "updated_at": {
+            "type": "string",
+            "example": "2024-05-28T01:25:58.453Z"
+          }
+        }
+      },
+      "orderBody": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 1
+          },
+          "customer_id": {
+            "type": "number",
+            "example": 1
+          },
+          "command": {
+            "type": "number",
+            "example": 2
+          },
+          "order_status": {
+            "type": "string",
+            "example": "recebido"
+          },
+          "total_price": {
+            "type": "number",
+            "example": 30.5
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "product_id": {
+                  "type": "number",
+                  "example": 1
+                },
+                "quantity": {
+                  "type": "number",
+                  "example": 1
+                },
+                "product_name": {
+                  "type": "string",
+                  "example": "lanche"
+                },
+                "price": {
+                  "type": "number",
+                  "example": 30.5
+                },
+                "notes": {
+                  "type": "string",
+                  "example": ""
+                }
+              }
+            }
+          },
+          "orderUpdatedAt": {
+            "type": "string",
+            "example": "2024-05-28T01:25:58.453Z"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2024-05-28T01:28:58.453Z"
+          }
+        },
+        "required": [
+          "command",
+          "orderStatus",
+          "totalPrice",
+          "items",
+          "orderUpdatedAt",
+          "createdAt"
+        ]
+      },
+      "orderResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 1
+          },
+          "customerId": {
+            "type": "number",
+            "example": 1
+          },
+          "command": {
+            "type": "number",
+            "example": 2
+          },
+          "orderStatus": {
+            "type": "string",
+            "example": "recebido"
+          },
+          "totalPrice": {
+            "type": "number",
+            "example": 30.5
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "productId": {
+                  "type": "number",
+                  "example": 1
+                },
+                "quantity": {
+                  "type": "number",
+                  "example": 1
+                },
+                "productName": {
+                  "type": "string",
+                  "example": "lanche"
+                },
+                "price": {
+                  "type": "number",
+                  "example": 30.5
+                },
+                "notes": {
+                  "type": "string",
+                  "example": ""
+                }
+              }
+            }
+          },
+          "orderUpdatedAt": {
+            "type": "array",
+            "status": {
+              "type":"string",
+              "example": "recebido"
+            },
+            "updatedAt": {
+              "type":"string",
+              "example": "2024-05-28T02:55:00.494Z"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2024-05-28T01:28:58.453Z"
+          }
+        },
+        "required": [
+          "customer_id",
+          "command",
+          "order_status",
+          "total_price",
+          "items",
+          "orderUpdatedAt",
+          "createdAt"
+        ]
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}

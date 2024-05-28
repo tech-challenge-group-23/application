@@ -6,7 +6,7 @@ import { productRoutes } from '@/adapters/input/http/routes/product';
 import { customerRoutes } from './routes/customer';
 import { orderRoutes } from './routes/order';
 
-import swaggerFile from '../../../swagger-output.json';
+import swaggerFile from '../../../swagger.json';
 
 const swaggerUi = require('swagger-ui-express');
 const bodyParser = require('body-parser');
