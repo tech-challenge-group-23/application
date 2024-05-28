@@ -11,7 +11,19 @@ const client = new Client({
 export async function up() {
   await client.connect();
   await client.query(
-    `CREATE TYPE order_status AS ENUM ('recebido', 'em preparação', 'pronto', 'finalizado');
+    `
+      DO $$
+      DECLARE
+          _exists BOOLEAN;
+      BEGIN
+          SELECT EXISTS (
+              SELECT FROM pg_type WHERE typname = 'order_status'
+          ) INTO _exists;
+
+          IF NOT _exists THEN
+              CREATE TYPE order_status AS ENUM ('recebido', 'em preparação', 'pronto', 'finalizado');
+          END IF;
+      END $$;
     `,
   );
   await client.query(`CREATE TABLE IF NOT EXISTS "orders"
