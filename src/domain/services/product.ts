@@ -107,7 +107,8 @@ export class ProductService implements ProductServicePort {
       const existsProduct = await this.productRepo.existsProduct(product.name);
 
       if (existsProduct) {
-        return {isValid: false,
+        return {
+          isValid: false,
           message: `product ${product.name} already exists.`
         }
       }
