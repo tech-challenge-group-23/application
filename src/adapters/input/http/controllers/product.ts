@@ -29,7 +29,7 @@ export class ProductController implements ProductControllerPort {
       }
 
       if (!serviceRes.created) {
-        return res.status(400).json(serviceRes);
+        return res.status(400).json({message: serviceRes.message});
       }
 
       return res.sendStatus(201);

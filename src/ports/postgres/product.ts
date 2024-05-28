@@ -6,4 +6,5 @@ export interface ProductRepositoryPort {
   delete(productId: number): Promise<boolean>;
   edit(productId: number, product: Partial<Product>): Promise<DefaultHttpResponse>;
   listByCategory(categoryId: number): Promise<Product[]>;
+  existsProduct(name: string): Promise<boolean>
 }
