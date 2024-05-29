@@ -1,5 +1,11 @@
 import { TableName } from '@/ports/utils/enums';
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity({ name: TableName.PRODUCT })
 export class Product {
@@ -35,7 +41,7 @@ export class Product {
   @CreateDateColumn()
   createdAt?: Date;
 
-  @CreateDateColumn()
+  @UpdateDateColumn()
   updatedAt?: Date;
 }
 

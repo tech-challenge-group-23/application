@@ -64,19 +64,21 @@ export class ProductService implements ProductServicePort {
     }
   }
 
-  async edit(productId: number, product: Partial<Product>): Promise<DefaultHttpResponse> {
+  async edit(productId: number, product: Partial<Product>): Promise<ProductServiceResponse> {
     try {
-      const productRepo = await this.productRepo.edit(productId, product);
+      const productDb = await this.productRepo.getById(productId);
 
-      return productRepo;
-    } catch (error) {
-      if (error instanceof Error) {
-        return {
-          status: 500,
-          message: error.message,
-        };
+      if (!productDb) {
+        return { wasFound: false, message: 'Product not found' };
       }
 
+      await this.productRepo.edit(productId, product);
+
+      return { wasFound: true };
+    } catch (error) {
+      if (error instanceof Error) {
+        return { errorMessage: error.message };
+      }
       throw error;
     }
   }
@@ -109,8 +111,8 @@ export class ProductService implements ProductServicePort {
       if (existsProduct) {
         return {
           isValid: false,
-          message: `product ${product.name} already exists.`
-        }
+          message: `product ${product.name} already exists.`,
+        };
       }
 
       if (!isInt(product.categoryId) || product.name == null) {

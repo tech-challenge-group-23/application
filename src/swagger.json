@@ -58,6 +58,7 @@
             "name": "cpf",
             "in": "path",
             "required": true,
+            "default": "55395058087",
             "schema": {
               "type": "string"
             }
@@ -152,6 +153,40 @@
             "bearerAuth": []
           }
         ]
+      },
+      "put": {
+        "tags": ["Product"],
+        "summary": "Edit product.",
+        "description": "This endpoint will edit the product with values of body request.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Product ID."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/productEditBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
       }
     },
     "/products/categories/{id}": {
@@ -200,7 +235,7 @@
           {
             "name": "customer_id",
             "in": "query",
-            "required": true,
+            "required": false,
             "schema": {
               "type": "string"
             }
@@ -208,7 +243,7 @@
           {
             "name": "order_status",
             "in": "query",
-            "required": true,
+            "required": false,
             "description": "Status for orders.",
             "schema": {
               "$ref": "#/components/schemas/orderStatusEnum"
@@ -319,14 +354,6 @@
             "schema": {
               "type": "string"
             }
-          },
-          {
-            "name": "order_status",
-            "in": "body",
-            "description": "Status for orders.",
-            "schema": {
-              "$ref": "#/components/schemas/orderStatusEnum"
-            }
           }
         ],
         "responses": {
@@ -349,12 +376,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "order_status": {
-                    "example": "any"
-                  }
-                }
+                "$ref": "#/components/schemas/orderEditStatusBody"
               }
             }
           }
@@ -369,11 +391,11 @@
         "properties": {
           "name": {
             "type": "string",
-            "example": "Gisele Cesar"
+            "example": "Frederico"
           },
           "cpf": {
             "type": "string",
-            "example": "12345678910"
+            "example": "55395058087"
           },
           "email": {
             "type": "string",
@@ -399,11 +421,11 @@
           },
           "name": {
             "type": "string",
-            "example": "Gisele Cesar"
+            "example": "Frederico"
           },
           "cpf": {
             "type": "string",
-            "example": "12345678910"
+            "example": "55395058087"
           },
           "email": {
             "type": "string",
@@ -450,9 +472,41 @@
         "required": [
           "categoryId",
           "name",
-          "description",
           "price"
         ]
+      },
+      "productEditBody": {
+        "type": "object",
+        "properties": {
+          "categoryId": {
+            "type": "string",
+            "format": "smallint",
+            "description": "Enum values: 1: lanche, 2: acompanhamento, 3: bebida, 4: sobremesa",
+            "enum": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "lanche"
+          },
+          "description": {
+            "type": "string",
+            "example": "descrição"
+          },
+          "price": {
+            "type": "string",
+            "example": 30.5
+          },
+          "image": {
+            "type": "string",
+            "format": "binary"
+          }
+        }
       },
       "producResponse": {
         "type": "object",
@@ -633,6 +687,21 @@
           "orderUpdatedAt",
           "createdAt"
         ]
+      },
+      "orderEditStatusBody": {
+        "type": "object",
+        "properties": {
+          "order_status": {
+            "type": "string",
+            "description": "Enum values: recebido, em preparação, pronto, finalizado",
+            "enum": [
+              "recebido",
+              "em preparação",
+              "pronto",
+              "finalizado"
+            ]
+          }
+        }
       },
       "orderStatusEnum": {
         "type": "string",

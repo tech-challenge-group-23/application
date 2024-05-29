@@ -1,7 +1,6 @@
 import express, { Request, Response } from 'express';
 import { provideProductController } from '@/adapters/input/http/controllers/product';
 import multer from 'multer';
-import ProductValidator from '@/domain/services/product-validation/edit';
 
 export const productRoutes = express.Router();
 
@@ -16,7 +15,6 @@ productRoutes.delete('/:id', (req: Request, res: Response) => {
 productRoutes.put(
   '/:id',
   upload.single('image'),
-  ProductValidator.editProduct,
   (req: Request, res: Response) => {
     provideProductController.editProduct(req, res);
   },
