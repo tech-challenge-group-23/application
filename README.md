@@ -21,17 +21,17 @@ The order queue is controlled by the front-end, which should request the list of
 
 ### Docker
 1. Run this command in root directory to build and run the app:
-   
+
 ```bash
 docker-compose up
 ```
 
 2. The aplication will be running on port: `8080`
 
-3. To access swagger and test the endpoint, use the route `/api-docs` (http://localhost:8080/api-docs) 
+3. To access swagger and test the endpoint, use the route `/api-docs` (http://localhost:8080/api-docs)
 
 4. Run this command in root directory to stops and removes the container:
-   
+
 ```bash
 docker-compose down
 ```
@@ -51,7 +51,7 @@ DATABASE_PASSWORD=admin123
 DATABASE_PORT=5432
 DATABASE=tech_challenge
 ```
-  
+
 3 install pnpm on your machine
 
 ```bash
@@ -67,7 +67,7 @@ pnpm install
 5. if is your first time running the project, run the following command
 
 ```bash
-pnpm run migrate:up
+pnpm migrate:up
 ```
 
 this command creates the database and run all database scripts as create table and CRUD operations
@@ -87,5 +87,4 @@ pnpm build
 
 if everything goes well you will see in the terminal the log running on port: `8080`
 
-7. To access swagger and test the endpoint, use the route `/api-docs` (http://localhost:8080/api-docs) 
-
+7. To access swagger and test the endpoint, use the route `/api-docs` (http://localhost:8080/api-docs)

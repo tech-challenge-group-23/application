@@ -8,12 +8,18 @@ export function validateUpdateRequest(req: Request): string[] {
   if (isNaN(productId)) {
     errors.push('product id must be a number');
   }
-  if (!bodyRequest.categoryId ||
-    !bodyRequest.name ||
-    !bodyRequest.description ||
-    !bodyRequest.price ||
-    !req.file) {
-      errors.push('invalid body request')
+
+  if (
+    bodyRequest.categoryId ||
+    bodyRequest.name ||
+    bodyRequest.description ||
+    bodyRequest.price ||
+    req.file
+  ) {
+    return errors;
   }
+
+  errors.push('invalid body request');
+
   return errors;
 }

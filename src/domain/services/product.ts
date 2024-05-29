@@ -68,13 +68,13 @@ export class ProductService implements ProductServicePort {
     try {
       const productDb = await this.productRepo.getById(productId);
 
-      if(!productDb){
-        return {  wasFound: false, message: 'Product not found' }
+      if (!productDb) {
+        return { wasFound: false, message: 'Product not found' };
       }
 
       await this.productRepo.edit(productId, product);
 
-      return { wasFound: true, isEdited: true}
+      return { wasFound: true };
     } catch (error) {
       if (error instanceof Error) {
         return { errorMessage: error.message };
@@ -111,8 +111,8 @@ export class ProductService implements ProductServicePort {
       if (existsProduct) {
         return {
           isValid: false,
-          message: `product ${product.name} already exists.`
-        }
+          message: `product ${product.name} already exists.`,
+        };
       }
 
       if (!isInt(product.categoryId) || product.name == null) {

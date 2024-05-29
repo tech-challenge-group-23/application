@@ -54,7 +54,6 @@ export class ProductRepository implements ProductRepositoryPort {
     try {
       const productRepository = AppDataSource.getRepository(Product);
       await productRepository.update({ id: productId }, product);
-
     } catch (error) {
       if (error instanceof Error) {
         throw new Error(`Error when trying to update product: ${error.message}`);
@@ -85,11 +84,12 @@ export class ProductRepository implements ProductRepositoryPort {
       const product = await AppDataSource.createQueryBuilder()
         .select('products')
         .from(Product, 'products')
-        .where('products.name = :name', { name: name }).getOne()
+        .where('products.name = :name', { name: name })
+        .getOne();
 
-        if (product === null) {
-          return false
-        }
+      if (product === null) {
+        return false;
+      }
 
       return true;
     } catch (error) {
@@ -100,19 +100,20 @@ export class ProductRepository implements ProductRepositoryPort {
     }
   }
 
-  async getById(id: number): Promise<Product | null>{
-    try{
-      const product = await AppDataSource.createQueryBuilder().retrieveById(id);
+  async getById(id: number): Promise<Product | null> {
+    try {
+      const productRepository = AppDataSource.getRepository(Product);
 
-    !product && console.info(`[INFO] Product id ${id} was not found in the database`)
-      return product
+      const product = await productRepository.findOneBy({ id });
 
-    } catch(error) {
+      !product && console.info(`[INFO] Product id ${id} was not found in the database`);
+
+      return product;
+    } catch (error) {
       if (error instanceof Error) {
         throw new Error(`Error getting product by id: ${error.message}`);
       }
       throw new Error(`Error getting product by id: ${error}`);
-
     }
   }
 }
