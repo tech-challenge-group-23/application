@@ -10,7 +10,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "rimraf dist",
     "types": "tsc --noEmit",
-    "dev": "node --env-file=.env.dev -r \"@swc/register\" \"src/adapters/input/http/index.ts\"",
+    "dev": "node -r \"@swc/register\" \"src/adapters/input/http/index.ts\"",
     "dev:watch": "node --env-file=.env.dev -r \"@swc/register\" --watch \"src/adapters/input/http/index.ts\"",
     "swagger": "node --env-file=.env.dev -r \"@swc/register\" \"src/swagger.ts\"",
     "build": "npm run clean && npm run types && swc src -d dist",
