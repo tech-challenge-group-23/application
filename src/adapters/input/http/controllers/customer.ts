@@ -3,11 +3,7 @@ import { provideCustomerService } from '@/domain/services/customer';
 import { CustomerControllerPort } from '@/ports/controllers/customer';
 import { CustomerServicePort } from '@/ports/services/customer';
 import { Request, Response } from 'express';
-import {
-  validateCustomerName,
-  validationCpf,
-  validationCustomerRequest,
-} from './request-validations/customer';
+import { validateCPF } from 'validations-br';
 
 export class CustomerController implements CustomerControllerPort {
   private customerService: CustomerServicePort;
@@ -17,55 +13,52 @@ export class CustomerController implements CustomerControllerPort {
   }
 
   async createCustomer(req: Request, res: Response): Promise<Response> {
-    const customer: Customer = {
-      name: req.body.name,
-      cpf: req.body.cpf,
-      email: req.body.email,
-    };
+    try {
+      const customer = new Customer(
+        req.body.name,
+        req.body.cpf,
+        req.body.email,
+      );
 
-    const validation = validationCustomerRequest(customer);
-
-    if (validation !== true) {
-      return res.status(400).send(validation);
-    } else {
-      try {
-        customer.name = validateCustomerName(customer.name);
-        const response = await this.customerService.create(customer);
-
-        if (response === `CPF number already registered.`) {
-          return res.status(400).send(response);
-        }
-
-        return res.status(201).send(response);
-      } catch (error) {
-        return res.status(500).send(error);
+      const response = await this.customerService.create(customer);
+      if (!response.isValid) {
+        return res.status(400).send(
+          {
+            message: response.message
+          }
+        );
       }
+
+      return res.status(201).send(response.customer);
+    } catch (error) {
+      return res.status(500).send(error);
     }
   }
 
   async searchCustomerByCpf(req: Request, res: Response): Promise<Response> {
-    const cpf = req.params.cpf;
-    const validation = validationCpf(cpf);
-
-    if (validation !== true) {
-      return res.status(400).send(validation);
-    } else {
       try {
-        const response = await this.customerService.searchByCpf(cpf);
-
-        if (response === `CPF not registered in the base.`) {
-          return res.status(400).send(response);
+        if (!validateCPF(req.params.cpf)) {
+          return res.status(400).send(
+            {
+              message: `invalid CPF`
+            }
+          );
         }
 
-        return res.status(200).send(response);
+        const response = await this.customerService.searchByCpf(req.params.cpf);
+        if (!response.isValid) {
+          return res.status(400).send(
+            {
+              message: response.message
+            }
+          );
+        }
+
+        return res.status(200).send(response.customer);
       } catch (error) {
-        if (error !== undefined) {
-          return res.status(400).send(error);
-        }
         return res.status(500).send(error);
       }
     }
-  }
 }
 
 export const provideCustomerController = new CustomerController();

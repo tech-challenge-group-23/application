@@ -1,48 +1,74 @@
-import { TableName } from '@/ports/utils/enums';
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  CreateDateColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { isNull, isInt, isString, validation } from 'aux/helpers/validation';
 
-@Entity({ name: TableName.PRODUCT })
 export class Product {
-  @PrimaryGeneratedColumn()
   id?: number;
-
-  @Column()
   categoryId!: number;
-
-  @Column({
-    unique: true,
-  })
   name!: string;
-
-  @Column({
-    nullable: true,
-    type: 'text',
-  })
   description?: string;
-
-  @Column('numeric', {
-    scale: 2,
-    transformer: {
-      from: (value) => (value === null ? null : Number(value)),
-      to: (value) => value,
-    },
-  })
   price!: number;
-
-  @Column('bytea', { nullable: true })
   image?: Buffer;
-
-  @CreateDateColumn()
   createdAt?: Date;
-
-  @UpdateDateColumn()
   updatedAt?: Date;
+
+  constructor(
+    categoryId: number,
+    name: string,
+    description: string,
+    price: number,
+    image?: Buffer,
+    id?: number,
+    createdAt?: Date,
+    updatedAt?: Date,
+  ) {
+    this.id = id;
+    this.categoryId = categoryId;
+    this.name = name;
+    this.description = description;
+    this.price = price;
+    this.image = image;
+    this.createdAt = createdAt,
+    this.updatedAt = updatedAt
+  }
+
+  validateProduct(product: Product): validation {
+    try {
+
+      if (!isInt(product.categoryId) || product.name == null) {
+        return {
+          isValid: false,
+          message: 'invalid categoryId',
+        };
+      }
+      if (!isString(product.name) || product.name == null) {
+        return {
+          isValid: false,
+          message: 'invalid name',
+        };
+      }
+      if (product.description !== undefined) {
+        if (!isString(product.description)) {
+          return {
+            isValid: false,
+            message: 'invalid description',
+          };
+        }
+      }
+
+      if (!isFinite(product.price) || !isNull(product.price) || product.price < 0) {
+        return {
+          isValid: false,
+          message: 'invalid price',
+        };
+      }
+
+      return { isValid: true };
+    } catch (error) {
+      if (error instanceof Error) {
+        return { errorMessage: error.message };
+      }
+      throw error;
+    }
+  }
 }
 
 export type ProductServiceResponse = {

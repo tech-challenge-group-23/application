@@ -1,13 +1,21 @@
 import { Product } from '@/domain/entities/product';
 import { ProductRepositoryPort } from '@/ports/postgres/product';
 import { AppDataSource } from '@/adapters/output/index';
+import { TableName } from '@/ports/utils/enums';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 export class ProductRepository implements ProductRepositoryPort {
   async save(product: Product): Promise<number | undefined> {
     try {
       const insertProduct = await AppDataSource.createQueryBuilder()
         .insert()
-        .into(Product)
+        .into(ProductRepo)
         .values([
           {
             categoryId: product.categoryId,
@@ -33,7 +41,7 @@ export class ProductRepository implements ProductRepositoryPort {
     try {
       const deleteProduct = await AppDataSource.createQueryBuilder()
         .delete()
-        .from(Product)
+        .from(ProductRepo)
         .where('id = :id', { id: productId })
         .execute();
 
@@ -50,10 +58,10 @@ export class ProductRepository implements ProductRepositoryPort {
     }
   }
 
-  async edit(productId: number, product: Partial<Product>): Promise<void> {
+  async edit(product: Product): Promise<void> {
     try {
-      const productRepository = AppDataSource.getRepository(Product);
-      await productRepository.update({ id: productId }, product);
+      const productRepository = AppDataSource.getRepository(ProductRepo);
+      await productRepository.update({ id: product.id }, product);
     } catch (error) {
       if (error instanceof Error) {
         throw new Error(`Error when trying to update product: ${error.message}`);
@@ -83,7 +91,7 @@ export class ProductRepository implements ProductRepositoryPort {
     try {
       const product = await AppDataSource.createQueryBuilder()
         .select('products')
-        .from(Product, 'products')
+        .from(ProductRepo, 'products')
         .where('products.name = :name', { name: name })
         .getOne();
 
@@ -116,6 +124,44 @@ export class ProductRepository implements ProductRepositoryPort {
       throw new Error(`Error getting product by id: ${error}`);
     }
   }
+}
+
+@Entity({ name: TableName.PRODUCT })
+export class ProductRepo {
+  @PrimaryGeneratedColumn()
+  id?: number;
+
+  @Column()
+  categoryId!: number;
+
+  @Column({
+    unique: true,
+  })
+  name!: string;
+
+  @Column({
+    nullable: true,
+    type: 'text',
+  })
+  description?: string;
+
+  @Column('numeric', {
+    scale: 2,
+    transformer: {
+      from: (value) => (value === null ? null : Number(value)),
+      to: (value) => value,
+    },
+  })
+  price!: number;
+
+  @Column('bytea', { nullable: true })
+  image?: Buffer;
+
+  @CreateDateColumn()
+  createdAt?: Date;
+
+  @UpdateDateColumn()
+  updatedAt?: Date;
 }
 
 export const provideProductRepository = new ProductRepository();
