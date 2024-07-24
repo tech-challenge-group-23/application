@@ -8,21 +8,42 @@ import {
   OrderStatus,
   OrderUpdateInfo,
   UpdateOrderRequest,
+  OrderServiceResponse,
+  validateOrderStatus,
 } from '../entities/order';
 import { provideOrderRepository } from '@/adapters/output/postgres/order';
+import { CustomerServicePort } from '@/ports/services/customer';
+import { provideCustomerService } from './customer';
 
 export class OrderService implements OrderServicePort {
   private orderRepository: OrderRepositoryPort;
+  private customerService: CustomerServicePort;
 
   constructor() {
     this.orderRepository = provideOrderRepository;
+    this.customerService = provideCustomerService;
   }
 
-  async create(request: NewOrderRequest): Promise<Order> {
-    const newOrder = this.generateNewOrder(request);
+  async create(request: NewOrderRequest): Promise<OrderServiceResponse> {
     try {
+      const newOrder = this.generateNewOrder(request);
+
+      const customer = await this.customerService.searchById(request.customer_id);
+      const isCustomer = customer != null;
+
+      const validationErrors = newOrder.validateOrderRequest(request, isCustomer);
+      if (validationErrors.length > 0) {
+        return {
+          erros: validationErrors
+        };
+      }
+
       const result = await this.orderRepository.save(newOrder);
-      return result;
+
+      return {
+        order: result
+
+      };
     } catch (error) {
       if (error instanceof Error)
         throw new Error(`An error occurred when creating a new order. Details: ${error.message}`);
@@ -30,16 +51,24 @@ export class OrderService implements OrderServicePort {
     }
   }
 
-  async getById(orderId: number): Promise<Order | null> {
+async getById(orderId: number): Promise<Order | null> {
     const result = await this.orderRepository.retrieveById(orderId);
     !result && console.info(`[INFO] Order id ${orderId} was not found in the database`);
     return result;
   }
 
-  async findByFilters(orderStatus?: string, customerId?: number): Promise<Order[] | null> {
+  async findByFilters(orderStatus?: string, customerId?: number): Promise<OrderServiceResponse> {
     try {
+      const validationError = validateOrderStatus(orderStatus);
+      if (validationError.length > 0) {
+        return { erros: validationError };
+      }
+
+
+
       const statusEnum = orderStatus ? this.getOrderStatus(orderStatus) : undefined;
-      return await this.orderRepository.retrieveByFilters(statusEnum, customerId);
+
+      return { orders: await this.orderRepository.retrieveByFilters(statusEnum, customerId)}
     } catch (error) {
       throw new Error(`Error in find orders by filters: ${error}`);
     }
@@ -63,12 +92,11 @@ export class OrderService implements OrderServicePort {
   private generateNewOrder(orderRequest: NewOrderRequest): Order {
     const orderStatusEnum = this.getOrderStatus(orderRequest.order_status);
 
-    const order: Order = {
-      customerId: orderRequest.customer_id,
-      command: orderRequest.command,
-      orderStatus: orderStatusEnum,
-      totalPrice: orderRequest.total_price,
-      items: orderRequest.items.map((item: OrderItemRequest): OrderItem => {
+    const order = new Order(
+      orderRequest.command,
+      orderStatusEnum,
+      orderRequest.total_price,
+      orderRequest.items.map((item: OrderItemRequest): OrderItem => {
         const newItem: OrderItem = {
           productId: item.product_id,
           quantity: item.quantity,
@@ -80,9 +108,10 @@ export class OrderService implements OrderServicePort {
         }
         return newItem;
       }),
-      orderUpdatedAt: this.appendOrderUpdateAt(orderStatusEnum),
-      createdAt: new Date(),
-    };
+      this.appendOrderUpdateAt(orderStatusEnum),
+      new Date(),
+      orderRequest.customer_id
+    );
     return order;
   }
 

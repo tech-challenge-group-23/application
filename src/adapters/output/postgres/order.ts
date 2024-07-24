@@ -1,16 +1,17 @@
-import { Order, OrderStatus } from '@/domain/entities/order'
 import { OrderRepositoryPort } from "@/ports/postgres/order";
 import { AppDataSource } from '..';
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { OrderItem, OrderStatus, OrderUpdateInfo, Order } from "@/domain/entities/order";
 
 export class OrderRepository implements OrderRepositoryPort {
-  private repository = AppDataSource.getRepository(Order);
+  private repository = AppDataSource.getRepository(OrderTable);
 
   async save(order: Order): Promise<Order> {
     try{
       const insertOrder = await AppDataSource
       .createQueryBuilder()
       .insert()
-      .into(Order)
+      .into(OrderTable)
       .values([
         { customerId: order.customerId,
           command: order.command,
@@ -23,7 +24,18 @@ export class OrderRepository implements OrderRepositoryPort {
       .returning(['id', 'customerId', 'command', 'orderStatus', 'totalPrice', 'items', 'orderUpdatedAt', 'createdAt' ])
       .execute()
 
-      return insertOrder.raw[0]
+      const orderRes = new Order(
+        insertOrder.raw[0].command,
+        insertOrder.raw[0].orderStatus,
+        insertOrder.raw[0].totalPrice,
+        insertOrder.raw[0].items,
+        insertOrder.raw[0].orderUpdatedAt,
+        insertOrder.raw[0].createdAt,
+        insertOrder.raw[0].customerId,
+        insertOrder.raw[0].id,
+      )
+
+      return orderRes
 
     } catch(error) {
       if(error instanceof Error)
@@ -35,8 +47,23 @@ export class OrderRepository implements OrderRepositoryPort {
   async retrieveById(id: number): Promise<Order | null> {
     const order = await this.repository
     .findOne({where: { id }})
-    return order;
+
+    if (!order) {
+      return null
+    }
+
+    return new Order(
+      order.command,
+      order.orderStatus,
+      order.totalPrice,
+      order.items,
+      order.orderUpdatedAt,
+      order.createdAt,
+      order.customerId,
+      order.id,
+    );
   }
+
   async retrieveByFilters(orderStatus?: OrderStatus, customerId?: number): Promise<Order[] | null> {
 
     if (orderStatus && customerId) {
@@ -88,4 +115,31 @@ export class OrderRepository implements OrderRepositoryPort {
   }
 }
 
-  export const provideOrderRepository = new OrderRepository();
+@Entity({name: "orders"})
+class OrderTable {
+  @PrimaryGeneratedColumn()
+  id?: number;
+
+  @Column({ nullable: true })
+  customerId?: number;
+
+  @Column()
+  command!: number;
+
+  @Column({ type: 'enum', enum: OrderStatus })
+  orderStatus!: OrderStatus;
+
+  @Column('decimal', { precision: 10, scale: 2 })
+  totalPrice!: number;
+
+  @Column("jsonb")
+  items!: OrderItem[];
+
+  @Column("jsonb")
+  orderUpdatedAt!: OrderUpdateInfo[];
+
+  @Column()
+  createdAt!: Date;
+}
+
+export const provideOrderRepository = new OrderRepository();

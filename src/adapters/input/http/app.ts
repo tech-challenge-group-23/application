@@ -22,7 +22,6 @@ app.use(bodyParser.json());
 
 app.use('/products', productRoutes);
 app.use('/customers', customerRoutes);
-
 app.use('/orders', orderRoutes);
 
 export function initApp() {

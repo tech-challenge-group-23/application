@@ -4,7 +4,6 @@ import { Product } from '@/domain/entities/product';
 import { Request, Response } from 'express';
 import { provideProductService } from '@/domain/services/product';
 import { DefaultHttpResponse } from '@/ports/utils/response';
-import { validateUpdateRequest } from './request-validations/product';
 
 export class ProductController implements ProductControllerPort {
   private productService: ProductServicePort;
@@ -15,20 +14,18 @@ export class ProductController implements ProductControllerPort {
 
   async createProduct(req: Request, res: Response): Promise<Response> {
     try {
-      const product: Product = {
-        categoryId: req.body.categoryId,
-        name: req.body.name,
-        description: req.body.description,
-        price: req.body.price,
-        image: req.file?.buffer,
-      };
+      const product = new Product(
+        req.body.categoryId,
+        req.body.name,
+        req.body.description,
+        req.body.price,
+        req.file!.buffer,
+      )
 
       const serviceRes = await this.productService.create(product);
-
       if (serviceRes.errorMessage !== undefined) {
         return res.status(500).send(serviceRes);
       }
-
       if (!serviceRes.created) {
         return res.status(400).json({ message: serviceRes.message });
       }
@@ -44,20 +41,14 @@ export class ProductController implements ProductControllerPort {
 
   async editProduct(req: Request, res: Response): Promise<Response> {
     try {
-      const id = Number(req.params.id);
-      const product: Partial<Product> = req.body;
-
-      const validationErrors = validateUpdateRequest(req);
-
-      if (validationErrors.length) {
-        return res.status(400).json({ messages: validationErrors });
-      }
-
-      if (req.file) {
-        product.image = req.file.buffer;
-      }
-
-      const productResponse = await this.productService.edit(id, product);
+      const product = new Product(
+        req.body.categoryId,
+        req.body.name,
+        req.body.description,
+        req.body.price,
+        req.file?.buffer,
+      )
+      const productResponse = await this.productService.edit(product);
 
       if (productResponse.errorMessage) {
         return res.status(500).json({ message: 'An unexpected error occurred' });
@@ -79,8 +70,15 @@ export class ProductController implements ProductControllerPort {
   async deleteProduct(req: Request, res: Response): Promise<Response> {
     try {
       const serviceRes = await this.productService.delete(Number(req.params.id));
+      if (!serviceRes.isValid) {
+        return res.status(400).send({ message: serviceRes.message });
+      }
 
-      return res.status(serviceRes.status).send({ message: serviceRes.message });
+      if (!serviceRes.wasFound) {
+        return res.status(404).send({ message: serviceRes.message });
+      }
+
+      return res.status(200).send({ message: serviceRes.message });
     } catch (error) {
       if (error instanceof Error) {
         return res.sendStatus(500).send({ message: 'internal server error' });

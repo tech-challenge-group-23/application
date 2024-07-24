@@ -1,5 +1,3 @@
-import { Entity, Column, PrimaryGeneratedColumn, } from "typeorm"
-
 export enum OrderStatus {
   Received = 'recebido',
   Preparing = 'em preparação',
@@ -41,29 +39,89 @@ export type UpdateOrderRequest = {
   order_status: string
 }
 
-@Entity({name: "orders"})
 export class Order {
-  @PrimaryGeneratedColumn()
-  id?: number;
+   id?: number;
+   customerId?: number;
+   command: number;
+   orderStatus: OrderStatus;
+   totalPrice: number;
+   items: OrderItem[];
+   orderUpdatedAt: OrderUpdateInfo[];
+   createdAt: Date;
 
-  @Column({ nullable: true })
-  customerId?: number;
+   constructor(
+    command: number,
+    orderStatus: OrderStatus,
+    totalPrice: number,
+    items: OrderItem[],
+    orderUpdatedAt: OrderUpdateInfo[],
+    createdAt: Date,
+    customerId?: number,
+    id?: number
+  ) {
+    this.id = id;
+    this.customerId = customerId;
+    this.command = command;
+    this.orderStatus = orderStatus;
+    this.totalPrice = totalPrice;
+    this.items = items;
+    this.orderUpdatedAt = orderUpdatedAt;
+    this.createdAt = createdAt;
+  }
 
-  @Column()
-  command!: number;
+  validateOrderRequest(request: NewOrderRequest, isCustomer: boolean): string[] {
+    const errors: string[] = [];
 
-  @Column({ type: 'enum', enum: OrderStatus })
-  orderStatus!: OrderStatus;
+    if (request.customer_id == null) {
+      errors.push('customerId is mandatory');
+    }
 
-  @Column('decimal', { precision: 10, scale: 2 })
-  totalPrice!: number;
+    if (request.customer_id != null && !isCustomer) {
+      errors.push('customerId not found');
+    }
 
-  @Column("jsonb")
-  items!: OrderItem[];
+    if (request.command == null) {
+      errors.push('command is mandatory');
+    }
 
-  @Column("jsonb")
-  orderUpdatedAt!: OrderUpdateInfo[];
+    const invalidOrderStatusError = validateOrderStatus(request.order_status);
+    if (invalidOrderStatusError.length > 0) {
+      errors.concat(invalidOrderStatusError);
+    }
 
-  @Column()
-  createdAt!: Date;
+    if (request.total_price == null) {
+      errors.push('totalPrice is mandatory');
+    }
+
+    if (!request.items || request.items.length === 0) {
+      errors.push('items is mandatory');
+    }
+
+    return errors;
+  }
+}
+
+export function validateOrderStatus(status?: string): string[] {
+  const errors: string[] = [];
+
+  if (status == null) {
+    errors.push('orderStatus is mandatory');
+  }
+
+  if (status != null && !isOrderStatus(status)) {
+    errors.push('invalid value for order_status');
+  }
+  return errors;
+}
+
+export function isOrderStatus(status: string): boolean {
+  return Object.values(OrderStatus).includes(status as OrderStatus);
+}
+
+export type OrderServiceResponse = {
+  erros?: string[] | null;
+  isValid?: boolean;
+  message?: string;
+  order?: Order;
+  orders?: Order[] | null;
 }

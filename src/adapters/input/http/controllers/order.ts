@@ -3,31 +3,23 @@ import { provideOrderService } from '@/domain/services/order';
 import { OrderControllerPort } from '@/ports/controllers/order';
 import { OrderServicePort } from '@/ports/services/order';
 import { Request, Response } from 'express';
-import { CustomerServicePort } from '@/ports/services/customer';
-import { provideCustomerService } from '@/domain/services/customer';
-import { validateOrderRequest, validateOrderStatus } from './request-validations/order';
 
 export class OrderController implements OrderControllerPort {
   private orderService: OrderServicePort;
-  private customerService: CustomerServicePort;
 
   constructor() {
     this.orderService = provideOrderService;
-    this.customerService = provideCustomerService;
   }
 
   async createOrder(req: Request, res: Response): Promise<Response> {
     try {
-      const customer = await this.customerService.searchById(req.body.customer_id);
-      const isCustomer = customer != null;
-      const validationErrors = validateOrderRequest(req.body, isCustomer);
-
-      if (validationErrors.length > 0) {
-        return res.status(400).json({ messages: validationErrors });
+      const response = await this.orderService.create(req.body);
+      if (response.erros != null && response.erros.length > 0) {
+        return res.status(400).json(response.erros);
       }
 
-      const response = await this.orderService.create(req.body);
-      return res.status(201).json(response);
+
+      return res.status(201).json(response.order);
     } catch (error) {
       console.error('Error creating order: ', error);
       return res.status(500).send('Failed to save the request.');
@@ -58,13 +50,19 @@ export class OrderController implements OrderControllerPort {
       const customerId: number | undefined = customer_id
         ? parseInt(customer_id as string)
         : undefined;
-      const validationError: string[] = validateOrderStatus(orderStatus);
 
+
+
+        /////waiting.... >
+
+
+
+
+
+      const response = await this.orderService.findByFilters(orderStatus, customerId);
       if (validationError.length > 0) {
         return res.status(400).json({ messages: validationError });
       }
-
-      const response = await this.orderService.findByFilters(orderStatus, customerId);
 
       if (!response) {
         return res.status(404).send('Orders was not found');
