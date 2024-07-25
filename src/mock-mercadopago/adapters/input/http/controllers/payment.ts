@@ -1,9 +1,9 @@
-import { providePaymentOrderService } from "@/api/domain/services/payment-order";
-import { PaymentControllerPort } from "@/api/ports/controllers/payment";
-import { PaymentOrderServicePort } from "@/api/ports/services/payment-order";
+import { providePaymentOrderService } from "@/mock-mercadopago/domain/services/payment-order";
+import { PaymentControllerPort } from "@/mock-mercadopago/ports/controllers/payment";
+import { PaymentOrderServicePort } from "@/mock-mercadopago/ports/services/payment-order";
 import { Request, Response } from "express";
 
-export class Teste implements PaymentControllerPort {
+export class PaymentController implements PaymentControllerPort {
   private paymentOrderService: PaymentOrderServicePort
 
   constructor() {
@@ -27,4 +27,4 @@ export class Teste implements PaymentControllerPort {
   }
 }
 
-export const providePaymentController = new Teste();
+export const providePaymentController = new PaymentController();

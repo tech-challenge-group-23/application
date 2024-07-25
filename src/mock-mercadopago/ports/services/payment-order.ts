@@ -1,4 +1,4 @@
-import { PaymentOrder } from "../repository/payment"
+import { PaymentOrder } from "@/mock-mercadopago/domain/entities/payment-order"
 
 export interface PaymentOrderServicePort {
   generate(orderId: number, totalPrice: number): Promise<string>

@@ -1,7 +1,7 @@
-import { PaymentOrderServicePort } from "@/api/ports/services/payment-order";
-import { PaymentOrder } from "../entities/payment-order";
-import { PaymentOrderRepositoryPort } from "@/api/ports/repository/payment";
-import { providePaymentOrderRepository } from "@/api/adapters/output/payment";
+import { providePaymentOrderRepository } from "@/mock-mercadopago/adapters/output/payment"
+import { PaymentOrderRepositoryPort } from "@/mock-mercadopago/ports/repository/payment"
+import { PaymentOrderServicePort } from "@/mock-mercadopago/ports/services/payment-order"
+import { PaymentOrder } from "../entities/payment-order"
 
 export class PaymentOrderService implements PaymentOrderServicePort {
   private paymentOrderRepository: PaymentOrderRepositoryPort
