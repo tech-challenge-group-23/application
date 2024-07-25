@@ -12,7 +12,7 @@ app.use(cors());
 app.use(morgan(':method :url :status :response-time ms - :res[content-length]'));
 
 
-app.use('/qr-code', paymentRoutes);
+app.use('/', paymentRoutes);
 
 app.listen(3004, () => {
   console.log('running on: ', `http://localhost:${3004}`);

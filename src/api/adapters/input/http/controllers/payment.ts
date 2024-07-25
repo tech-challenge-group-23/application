@@ -14,13 +14,16 @@ export class Teste implements PaymentControllerPort {
     const orderId = req.body.orderId;
     const totalPrice = req.body.totalPrice;
 
-    const qrData = this.paymentOrderService.generate(orderId, totalPrice);
+    const qrData = await this.paymentOrderService.generate(orderId, totalPrice);
 
     return res.status(200).send({ qr_data: qrData })
   }
 
-  verifyPaymentOrder(req: Request, res: Response): Promise<Response> {
-    throw new Error("Method not implemented.");
+  async verifyPaymentOrder(req: Request, res: Response): Promise<Response> {
+    const orderId = req.params.orderId as unknown as number;
+    const paymentOrder = await this.paymentOrderService.verify(Number(orderId))
+
+    return res.status(200).send(paymentOrder)
   }
 }
 
