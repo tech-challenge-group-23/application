@@ -3,7 +3,11 @@ import { provideOrderController } from '../controllers/order';
 
 export const orderRoutes = express.Router();
 
-orderRoutes.get("/", (req: Request, res: Response) => { provideOrderController.getOrders(req, res) });
+orderRoutes.get("/", (req: Request, res: Response) => { provideOrderController.getOrdersByStatusAndCustomer(req, res) });
+
+orderRoutes.get("/all", (req: Request, res: Response) => { provideOrderController.getAllOrders(req, res) });
+
+orderRoutes.get("/open-payments", (req: Request, res: Response) => { provideOrderController.getOrdersIDOpenPayments(req, res) });
 
 orderRoutes.get("/:id", (req: Request, res: Response) => { provideOrderController.getOrderById(req, res) });
 

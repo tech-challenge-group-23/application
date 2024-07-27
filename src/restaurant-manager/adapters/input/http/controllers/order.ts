@@ -41,7 +41,7 @@ export class OrderController implements OrderControllerPort {
     }
   }
 
-  async getOrders(req: Request, res: Response): Promise<Response> {
+  async getOrdersByStatusAndCustomer(req: Request, res: Response): Promise<Response> {
     try {
       const { order_status, customer_id } = req.query;
 
@@ -84,6 +84,28 @@ export class OrderController implements OrderControllerPort {
     } catch (error) {
       console.error('Error updating order:', error);
       return res.status(500).send({ message: 'Internal Server Error' });
+    }
+  }
+
+  async getOrdersIDOpenPayments(req: Request, res: Response): Promise<Response> {
+    try {
+      const response = await this.orderService.findOrdersIDOpenPayments();
+
+      return res.status(200).json(response);
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+      return res.status(500).send('Internal Server Error');
+    }
+  }
+
+  async getAllOrders(req: Request, res: Response): Promise<Response> {
+    try {
+      const response = await this.orderService.findAllOrders();
+
+      return res.status(200).json(response);
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+      return res.status(500).send('Internal Server Error');
     }
   }
 }

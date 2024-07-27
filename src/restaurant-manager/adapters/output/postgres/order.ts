@@ -143,6 +143,81 @@ export class OrderRepository implements OrderRepositoryPort {
     return null
   }
 
+    async retrieveOrdersIDByOpenPayments(): Promise<number[]> {
+      var retriveredOrdersID = await this.repository.find({
+        select:['id'],
+        where:{orderStatus: OrderStatus.WaitingPayment}
+      })
+
+      var ordersIDs: number[] = []
+      retriveredOrdersID.forEach(element => {
+        if(element.id != undefined) {
+          ordersIDs.push(element.id)
+        }
+      });
+
+      return ordersIDs
+    }
+
+    async retrieveAllOrders(): Promise<Order[]> {
+      var retriveredOrders = await AppDataSource.createQueryBuilder()
+      .select('orders')
+        .from(OrderTable, 'orders')
+        .where('orders.orderStatus != :orderStatus', { orderStatus: OrderStatus.WaitingPayment})
+        .orderBy('orders.createdAt')
+        .getMany();
+
+
+      var ordersReady: Order[] = []
+      var ordersPreparing: Order[] = []
+      var ordersReceived: Order[] = []
+
+      retriveredOrders.forEach(element => {
+        if(element.orderStatus === OrderStatus.Ready) {
+          ordersReady.push(new Order(
+            element.command,
+            element.orderStatus,
+            element.totalPrice,
+            element.items,
+            element.orderUpdatedAt,
+            element.createdAt,
+            element.customerId,
+            element.id
+          ))
+        }
+
+        if(element.orderStatus === OrderStatus.Preparing) {
+          ordersPreparing.push(new Order(
+            element.command,
+            element.orderStatus,
+            element.totalPrice,
+            element.items,
+            element.orderUpdatedAt,
+            element.createdAt,
+            element.customerId,
+            element.id
+          ))
+        }
+
+        if(element.orderStatus === OrderStatus.Received) {
+          ordersReceived.push(new Order(
+            element.command,
+            element.orderStatus,
+            element.totalPrice,
+            element.items,
+            element.orderUpdatedAt,
+            element.createdAt,
+            element.customerId,
+            element.id
+          ))
+        }
+      });
+
+      var orders = ordersReady.concat(ordersPreparing, ordersReceived)
+
+      return orders
+    }
+
   async update(order: Order): Promise<void> {
     try{
       await AppDataSource

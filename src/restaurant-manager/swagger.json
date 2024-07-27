@@ -304,6 +304,66 @@
         }
       }
     },
+    "/orders/open-payments": {
+      "get": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "Returns the orders IDs with waiting payment status to weebhook check",
+        "description": "Returns all orders IDs that have payment status open",
+        "parameters": [
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/orders/all": {
+      "get": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "Returns orders in a specific order",
+        "description": "Returns an order list orderned by asceding date and Pronto, Em preparação, Recebido status. Without Finalizado status",
+        "parameters": [
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
     "/orders/{id}": {
       "get": {
         "tags": [
