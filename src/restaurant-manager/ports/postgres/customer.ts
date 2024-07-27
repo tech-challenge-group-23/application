@@ -1,4 +1,4 @@
-import { Customer } from "@/domain/entities/customer";
+import { Customer } from "@/restaurant-manager/domain/entities/customer"
 
 export interface CustomerRepositoryPort {
     save(customer: Customer): Promise<Customer>

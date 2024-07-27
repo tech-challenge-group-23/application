@@ -1,7 +1,7 @@
-import { UpdateOrderRequest } from '@/domain/entities/order';
-import { provideOrderService } from '@/domain/services/order';
-import { OrderControllerPort } from '@/ports/controllers/order';
-import { OrderServicePort } from '@/ports/services/order';
+import { UpdateOrderRequest, validateOrderStatus } from '@/restaurant-manager/domain/entities/order';
+import { provideOrderService } from '@/restaurant-manager/domain/services/order';
+import { OrderControllerPort } from '@/restaurant-manager/ports/controllers/order';
+import { OrderServicePort } from '@/restaurant-manager/ports/services/order';
 import { Request, Response } from 'express';
 
 export class OrderController implements OrderControllerPort {
@@ -17,7 +17,6 @@ export class OrderController implements OrderControllerPort {
       if (response.erros != null && response.erros.length > 0) {
         return res.status(400).json(response.erros);
       }
-
 
       return res.status(201).json(response.order);
     } catch (error) {
@@ -51,17 +50,9 @@ export class OrderController implements OrderControllerPort {
         ? parseInt(customer_id as string)
         : undefined;
 
-
-
-        /////waiting.... >
-
-
-
-
-
       const response = await this.orderService.findByFilters(orderStatus, customerId);
-      if (validationError.length > 0) {
-        return res.status(400).json({ messages: validationError });
+      if (response.erros && response.erros.length > 0) {
+        return res.status(400).json({ messages: response.message });
       }
 
       if (!response) {

@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
-import { provideProductController } from '@/adapters/input/http/controllers/product';
 import multer from 'multer';
+import { provideProductController } from '../controllers/product';
 
 export const productRoutes = express.Router();
 

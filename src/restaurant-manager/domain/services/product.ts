@@ -1,8 +1,8 @@
-import { ProductRepositoryPort } from '@/ports/postgres/product';
+import { ProductServicePort } from '@/restaurant-manager/ports/services/product';
 import { Product, ProductServiceResponse } from '../entities/product';
-import { ProductServicePort } from '@/ports/services/product';
-import { provideProductRepository } from '@/adapters/output/postgres/product';
 import { isInt } from 'aux/helpers/validation';
+import { ProductRepositoryPort } from '@/restaurant-manager/ports/postgres/product';
+import { provideProductRepository } from '@/restaurant-manager/adapters/output/postgres/product';
 
 export class ProductService implements ProductServicePort {
   private productRepo: ProductRepositoryPort;
@@ -12,8 +12,6 @@ export class ProductService implements ProductServicePort {
 
   async create(product: Product): Promise<ProductServiceResponse> {
     try {
-      console.log("hereee")
-
       const existsProduct = await this.productRepo.existsProduct(product.name);
       if (existsProduct) {
         return {
@@ -24,7 +22,7 @@ export class ProductService implements ProductServicePort {
 
       const productValidated = await product.validateProduct(product);
       if (productValidated.errorMessage !== undefined) {
-        return { errorMessage: productValidated.errorMessage };
+        return { error: productValidated.errorMessage };
       }
       if (!productValidated.isValid) {
         return { created: false, isValid: productValidated.isValid, message: productValidated.message };
@@ -35,7 +33,7 @@ export class ProductService implements ProductServicePort {
       return { created: true, isValid: productValidated.isValid };
     } catch (error) {
       if (error instanceof Error) {
-        return { errorMessage: error.message };
+        return { error: error.message };
       }
       throw error;
     }
@@ -43,9 +41,8 @@ export class ProductService implements ProductServicePort {
 
   async delete(productId: number): Promise<ProductServiceResponse> {
     try {
-      if (isInt(productId)) {
+      if (!isInt(productId)) {
         return {
-          isValid: false,
           message: 'Product ID must be a number',
         };
       }
@@ -53,7 +50,6 @@ export class ProductService implements ProductServicePort {
       const repoRes = await this.productRepo.delete(productId);
       if (!repoRes) {
         return {
-          wasFound: false,
           message: `product ${productId} was not found`,
         };
       }
@@ -71,21 +67,20 @@ export class ProductService implements ProductServicePort {
 
   async edit(product: Product): Promise<ProductServiceResponse>  {
     try {
-      if (isInt(product.id)) {
+      if (!isInt(product.id)) {
         return {
-          isValid: false,
           message: 'Product ID must be a number',
         };
       }
 
-      const productDb = await this.productRepo.getById(Number(product.id));
-      if (!productDb) {
+      const existsProduct = await this.productRepo.existsProductID(Number(product.id));
+      if (!existsProduct) {
         return { wasFound: false, message: 'Product not found' };
       }
 
       const productValidated = await product.validateProduct(product);
       if (productValidated.errorMessage !== undefined) {
-        return { errorMessage: productValidated.errorMessage };
+        return { error: productValidated.errorMessage };
       }
       if (!productValidated.isValid) {
         return { created: false, isValid: productValidated.isValid, message: productValidated.message };
@@ -96,7 +91,7 @@ export class ProductService implements ProductServicePort {
       return { message: 'Product edited' };
     } catch (error) {
       if (error instanceof Error) {
-        return { errorMessage: error.message };
+        return { error: error.message };
       }
       throw error;
     }
@@ -104,7 +99,7 @@ export class ProductService implements ProductServicePort {
 
   async listByCategory(categoryId: number): Promise<ProductServiceResponse>  {
     try {
-      if (isInt(categoryId)) {
+      if (!isInt(categoryId)) {
         throw {
           message: 'Product ID must be a number',
           isValid: false

@@ -1,7 +1,8 @@
-import { CustomerRepositoryPort } from "@/ports/postgres/customer";
-import { CustomerServicePort } from "@/ports/services/customer";
+import { provideCustomerRepository } from "@/restaurant-manager/adapters/output/postgres/customer";
+import { CustomerRepositoryPort } from "@/restaurant-manager/ports/postgres/customer";
+import { CustomerServicePort } from "@/restaurant-manager/ports/services/customer";
 import { Customer, CustomerServiceResponse } from "../entities/customer";
-import { provideCustomerRepository } from "@/adapters/output/postgres/customer";
+import { validateCPF } from "validations-br";
 
 
 export class CustomerService implements CustomerServicePort {
@@ -24,13 +25,14 @@ export class CustomerService implements CustomerServicePort {
             customer.rewrittenCustomerName()
 
             const existsCpf = await this.customerRepository.searchByCpf(customer.cpf)
-            if(existsCpf === undefined) {
+            if(existsCpf !== undefined) {
                 return {
                     isValid: false,
                     message: `CPF number already registered.`
                 }
             } else {
                 return {
+                    isValid: true,
                     customer: await this.customerRepository.save(customer)
                 }
             }
@@ -43,14 +45,20 @@ export class CustomerService implements CustomerServicePort {
 
     async searchByCpf(cpf: string): Promise<CustomerServiceResponse> {
         try{
+            if (!validateCPF(cpf)) {
+                return {
+                    message: `Invalid CPF`
+                }
+              }
+
             const customer = await this.customerRepository.searchByCpf(cpf)
             if (customer === undefined) {
                 return {
-                    isValid: false,
                     message: `CPF number isn't exists`
                 }
             }
             return {
+                isValid: true,
                 customer: customer
             }
         } catch(error) {
@@ -74,8 +82,8 @@ export class CustomerService implements CustomerServicePort {
             }
         } catch(error) {
             if(error instanceof Error)
-                throw new Error(`Error when searching for cpf: ${error.message}`)
-            throw new Error(`Error when searching for cpf: ${error}`)
+                throw new Error(`Error when searching for id: ${error.message}`)
+            throw new Error(`Error when searching for id: ${error}`)
         }
     }
 }

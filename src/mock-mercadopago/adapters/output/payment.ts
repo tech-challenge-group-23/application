@@ -1,5 +1,6 @@
-import { PaymentOrder, PaymentOrderRepositoryPort } from "@/api/ports/repository/payment";
+import { PaymentOrderRepositoryPort } from "@/mock-mercadopago/ports/repository/payment";
 import database from "./db";
+import { PaymentOrder } from "@/mock-mercadopago/domain/entities/payment-order";
 
 
 class PaymentOrderRepository implements PaymentOrderRepositoryPort{

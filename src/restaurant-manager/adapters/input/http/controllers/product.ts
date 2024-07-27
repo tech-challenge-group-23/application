@@ -1,9 +1,9 @@
-import { ProductControllerPort } from '@/ports/controllers/product';
-import { ProductServicePort } from '@/ports/services/product';
-import { Product } from '@/domain/entities/product';
+import { Product } from '@/restaurant-manager/domain/entities/product';
+import { provideProductService } from '@/restaurant-manager/domain/services/product';
+import { ProductControllerPort } from '@/restaurant-manager/ports/controllers/product';
+import { ProductServicePort } from '@/restaurant-manager/ports/services/product';
+import { DefaultHttpResponse } from '@/restaurant-manager/ports/utils/response';
 import { Request, Response } from 'express';
-import { provideProductService } from '@/domain/services/product';
-import { DefaultHttpResponse } from '@/ports/utils/response';
 
 export class ProductController implements ProductControllerPort {
   private productService: ProductServicePort;
@@ -17,13 +17,13 @@ export class ProductController implements ProductControllerPort {
       const product = new Product(
         req.body.categoryId,
         req.body.name,
-        req.body.description,
         req.body.price,
-        req.file!.buffer,
+        req.body.description,
+        req.file?.buffer,
       )
 
       const serviceRes = await this.productService.create(product);
-      if (serviceRes.errorMessage !== undefined) {
+      if (serviceRes.error !== undefined) {
         return res.status(500).send(serviceRes);
       }
       if (!serviceRes.created) {
@@ -32,10 +32,8 @@ export class ProductController implements ProductControllerPort {
 
       return res.sendStatus(201);
     } catch (error) {
-      if (error instanceof Error) {
-        return res.sendStatus(500);
-      }
-      throw error;
+      console.log(error)
+      return res.sendStatus(500)
     }
   }
 
@@ -44,14 +42,16 @@ export class ProductController implements ProductControllerPort {
       const product = new Product(
         req.body.categoryId,
         req.body.name,
-        req.body.description,
         req.body.price,
+        req.body.description,
         req.file?.buffer,
+        Number(req.params?.id),
       )
+
       const productResponse = await this.productService.edit(product);
 
-      if (productResponse.errorMessage) {
-        return res.status(500).json({ message: 'An unexpected error occurred' });
+      if (productResponse.error) {
+        return res.status(500).json({ message: productResponse.error });
       }
 
       if (!productResponse.wasFound) {
@@ -60,10 +60,8 @@ export class ProductController implements ProductControllerPort {
 
       return res.sendStatus(200);
     } catch (error) {
-      if (error instanceof Error) {
-        return res.sendStatus(500);
-      }
-      throw error;
+      console.log(error)
+      return res.sendStatus(500)
     }
   }
 
@@ -80,10 +78,8 @@ export class ProductController implements ProductControllerPort {
 
       return res.status(200).send({ message: serviceRes.message });
     } catch (error) {
-      if (error instanceof Error) {
-        return res.sendStatus(500).send({ message: 'internal server error' });
-      }
-      throw error;
+      console.log(error)
+      return res.sendStatus(500)
     }
   }
 
@@ -93,13 +89,8 @@ export class ProductController implements ProductControllerPort {
 
       return res.status(200).json(serviceRes.products);
     } catch (error) {
-      if (error instanceof Error) {
-        return res.status(500).send({ message: error.message });
-      }
-
-      return res
-        .status((error as DefaultHttpResponse).status)
-        .send({ message: (error as DefaultHttpResponse).message });
+      console.log(error)
+      return res.sendStatus(500)
     }
   }
 }

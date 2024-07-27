@@ -1,4 +1,4 @@
-import { Customer, CustomerServiceResponse } from "@/domain/entities/customer";
+import { Customer, CustomerServiceResponse } from "@/restaurant-manager/domain/entities/customer"
 
 
 export interface CustomerServicePort {

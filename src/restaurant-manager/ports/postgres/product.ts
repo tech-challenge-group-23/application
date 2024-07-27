@@ -7,5 +7,5 @@ export interface ProductRepositoryPort {
   edit(product: Product): Promise<void>;
   listByCategory(categoryId: number): Promise<Product[]>;
   existsProduct(name: string): Promise<boolean>
-  getById(id: number): Promise<Product | null>
+  existsProductID(id: number): Promise<boolean>
 }
