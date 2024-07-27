@@ -57,6 +57,14 @@ async getById(orderId: number): Promise<Order | null> {
     return result;
   }
 
+  async findOrdersIDOpenPayments(): Promise<number[]> {
+    return await this.orderRepository.retrieveOrdersIDByOpenPayments();
+  }
+
+  async findAllOrders(): Promise<Order[]> {
+    return await this.orderRepository.retrieveAllOrders();
+  }
+
   async findByFilters(orderStatus?: string, customerId?: number): Promise<OrderServiceResponse> {
     try {
       const validationError = validateOrderStatus(orderStatus);
