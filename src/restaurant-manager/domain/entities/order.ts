@@ -52,6 +52,7 @@ export class Order {
    items: OrderItem[];
    orderUpdatedAt: OrderUpdateInfo[];
    createdAt: Date;
+   qrCode?: string;
 
    constructor(
     command: number,
@@ -61,7 +62,8 @@ export class Order {
     orderUpdatedAt: OrderUpdateInfo[],
     createdAt: Date,
     customerId?: number,
-    id?: number
+    id?: number,
+    qrCode?: string,
   ) {
     this.id = id;
     this.customerId = customerId;
@@ -71,6 +73,7 @@ export class Order {
     this.items = items;
     this.orderUpdatedAt = orderUpdatedAt;
     this.createdAt = createdAt;
+    this.qrCode = qrCode;
   }
 
   validateOrderRequest(request: NewOrderRequest, isCustomer: boolean): string[] {

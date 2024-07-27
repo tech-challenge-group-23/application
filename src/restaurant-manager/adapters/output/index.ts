@@ -1,4 +1,4 @@
-import { DATABASE_HOST, DATABASE_PORT, DATABASE_USER, DATABASE_PASSWORD, DATABASE } from '@/restaurant-manager/env';
+import { DATABASE_HOST, DATABASE_PORT, DATABASE_USER, DATABASE_PASSWORD, DATABASE } from 'env';
 import { DataSource } from 'typeorm';
 import { CustomerTable } from './postgres/customer';
 import { ProductTable } from '@/restaurant-manager/domain/entities/product';
