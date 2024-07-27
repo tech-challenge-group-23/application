@@ -1,4 +1,6 @@
+import { TableName } from '@/restaurant-manager/ports/utils/enums';
 import { isNull, isInt, isString, validation } from 'aux/helpers/validation';
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 export class Product {
   id?: number;
@@ -13,8 +15,8 @@ export class Product {
   constructor(
     categoryId: number,
     name: string,
-    description: string,
     price: number,
+    description?: string,
     image?: Buffer,
     id?: number,
     createdAt?: Date,
@@ -77,5 +79,43 @@ export type ProductServiceResponse = {
   wasFound?: boolean;
   products?: Product[];
   message?: string;
-  errorMessage?: string;
+  error?: string;
 };
+
+@Entity({ name: TableName.PRODUCT })
+export class ProductTable {
+  @PrimaryGeneratedColumn()
+  id?: number;
+
+  @Column()
+  categoryId!: number;
+
+  @Column({
+    unique: true,
+  })
+  name!: string;
+
+  @Column({
+    nullable: true,
+    type: 'text',
+  })
+  description?: string;
+
+  @Column('numeric', {
+    scale: 2,
+    transformer: {
+      from: (value) => (value === null ? null : Number(value)),
+      to: (value) => value,
+    },
+  })
+  price!: number;
+
+  @Column('bytea', { nullable: true })
+  image?: Buffer;
+
+  @CreateDateColumn()
+  createdAt?: Date;
+
+  @UpdateDateColumn()
+  updatedAt?: Date;
+}

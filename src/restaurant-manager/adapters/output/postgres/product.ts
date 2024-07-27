@@ -1,21 +1,15 @@
-import { Product } from '@/domain/entities/product';
-import { ProductRepositoryPort } from '@/ports/postgres/product';
-import { AppDataSource } from '@/adapters/output/index';
-import { TableName } from '@/ports/utils/enums';
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  CreateDateColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { TableName } from '@/restaurant-manager/ports/utils/enums';
+import { AppDataSource } from '..';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { ProductRepositoryPort } from '@/restaurant-manager/ports/postgres/product';
+import { Product, ProductTable } from '@/restaurant-manager/domain/entities/product';
 
 export class ProductRepository implements ProductRepositoryPort {
   async save(product: Product): Promise<number | undefined> {
     try {
       const insertProduct = await AppDataSource.createQueryBuilder()
         .insert()
-        .into(ProductRepo)
+        .into(ProductTable)
         .values([
           {
             categoryId: product.categoryId,
@@ -41,7 +35,7 @@ export class ProductRepository implements ProductRepositoryPort {
     try {
       const deleteProduct = await AppDataSource.createQueryBuilder()
         .delete()
-        .from(ProductRepo)
+        .from(ProductTable)
         .where('id = :id', { id: productId })
         .execute();
 
@@ -60,7 +54,7 @@ export class ProductRepository implements ProductRepositoryPort {
 
   async edit(product: Product): Promise<void> {
     try {
-      const productRepository = AppDataSource.getRepository(ProductRepo);
+      const productRepository = AppDataSource.getRepository(ProductTable);
       await productRepository.update({ id: product.id }, product);
     } catch (error) {
       if (error instanceof Error) {
@@ -74,11 +68,26 @@ export class ProductRepository implements ProductRepositoryPort {
     try {
       const listProductByCategory = await AppDataSource.createQueryBuilder()
         .select('products')
-        .from(Product, 'products')
+        .from(ProductTable, 'products')
         .where('products.categoryId = :categoryId', { categoryId: categoryId })
         .getMany();
 
-      return listProductByCategory;
+        var products: Product[] = []
+        listProductByCategory.forEach(element => {
+
+          products.push(new Product(
+            element.categoryId,
+            element.name,
+            element.price,
+            element.description,
+            element.image,
+            element.id,
+            element.createdAt,
+            element.updatedAt
+          ))
+        });
+
+      return products;
     } catch (error) {
       if (error instanceof Error) {
         throw new Error(`Error listing product: ${error.message}`);
@@ -91,7 +100,7 @@ export class ProductRepository implements ProductRepositoryPort {
     try {
       const product = await AppDataSource.createQueryBuilder()
         .select('products')
-        .from(ProductRepo, 'products')
+        .from(ProductTable, 'products')
         .where('products.name = :name', { name: name })
         .getOne();
 
@@ -108,15 +117,17 @@ export class ProductRepository implements ProductRepositoryPort {
     }
   }
 
-  async getById(id: number): Promise<Product | null> {
+  async existsProductID(id: number): Promise<boolean> {
     try {
-      const productRepository = AppDataSource.getRepository(Product);
+      const productRepository = AppDataSource.getRepository(ProductTable);
 
       const product = await productRepository.findOneBy({ id });
 
-      !product && console.info(`[INFO] Product id ${id} was not found in the database`);
+      if (!product) {
+          return false
+      }
 
-      return product;
+      return true;
     } catch (error) {
       if (error instanceof Error) {
         throw new Error(`Error getting product by id: ${error.message}`);
@@ -124,44 +135,6 @@ export class ProductRepository implements ProductRepositoryPort {
       throw new Error(`Error getting product by id: ${error}`);
     }
   }
-}
-
-@Entity({ name: TableName.PRODUCT })
-export class ProductRepo {
-  @PrimaryGeneratedColumn()
-  id?: number;
-
-  @Column()
-  categoryId!: number;
-
-  @Column({
-    unique: true,
-  })
-  name!: string;
-
-  @Column({
-    nullable: true,
-    type: 'text',
-  })
-  description?: string;
-
-  @Column('numeric', {
-    scale: 2,
-    transformer: {
-      from: (value) => (value === null ? null : Number(value)),
-      to: (value) => value,
-    },
-  })
-  price!: number;
-
-  @Column('bytea', { nullable: true })
-  image?: Buffer;
-
-  @CreateDateColumn()
-  createdAt?: Date;
-
-  @UpdateDateColumn()
-  updatedAt?: Date;
 }
 
 export const provideProductRepository = new ProductRepository();

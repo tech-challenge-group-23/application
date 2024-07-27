@@ -1,4 +1,4 @@
-import { initApp } from '@/adapters/input/http/app'
+import { initApp } from "./app";
 
 
 initApp

@@ -1,5 +1,4 @@
-import { OrderRepositoryPort } from '@/ports/postgres/order';
-import { OrderServicePort } from '@/ports/services/order';
+import { OrderServicePort } from '@/restaurant-manager/ports/services/order';
 import {
   Order,
   OrderItem,
@@ -11,9 +10,10 @@ import {
   OrderServiceResponse,
   validateOrderStatus,
 } from '../entities/order';
-import { provideOrderRepository } from '@/adapters/output/postgres/order';
-import { CustomerServicePort } from '@/ports/services/customer';
 import { provideCustomerService } from './customer';
+import { CustomerServicePort } from '@/restaurant-manager/ports/services/customer';
+import { provideOrderRepository } from '@/restaurant-manager/adapters/output/postgres/order';
+import { OrderRepositoryPort } from '@/restaurant-manager/ports/postgres/order';
 
 export class OrderService implements OrderServicePort {
   private orderRepository: OrderRepositoryPort;
@@ -28,8 +28,8 @@ export class OrderService implements OrderServicePort {
     try {
       const newOrder = this.generateNewOrder(request);
 
-      const customer = await this.customerService.searchById(request.customer_id);
-      const isCustomer = customer != null;
+      const customerRes = await this.customerService.searchById(request.customer_id);
+      const isCustomer = customerRes.customer !== undefined;
 
       const validationErrors = newOrder.validateOrderRequest(request, isCustomer);
       if (validationErrors.length > 0) {
@@ -63,8 +63,6 @@ async getById(orderId: number): Promise<Order | null> {
       if (validationError.length > 0) {
         return { erros: validationError };
       }
-
-
 
       const statusEnum = orderStatus ? this.getOrderStatus(orderStatus) : undefined;
 
@@ -117,6 +115,8 @@ async getById(orderId: number): Promise<Order | null> {
 
   private getOrderStatus(status: string): OrderStatus {
     switch (status) {
+      case 'pagamento pendente':
+        return OrderStatus.WaitingPayment
       case 'recebido':
         return OrderStatus.Received;
       case 'em preparação':

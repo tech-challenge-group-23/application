@@ -558,7 +558,7 @@
           },
           "order_status": {
             "type": "string",
-            "example": "recebido"
+            "example": "pagamento pendente"
           },
           "total_price": {
             "type": "number",
@@ -706,6 +706,7 @@
       "orderStatusEnum": {
         "type": "string",
         "enum": [
+          "pagamento pendente",
           "recebido",
           "em preparação",
           "pronto",

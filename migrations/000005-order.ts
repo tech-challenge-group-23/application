@@ -1,4 +1,4 @@
-import { DATABASE, DATABASE_HOST, DATABASE_PASSWORD, DATABASE_PORT, DATABASE_USER } from '@/env';
+import { DATABASE, DATABASE_HOST, DATABASE_PASSWORD, DATABASE_PORT, DATABASE_USER } from '@/restaurant-manager/env';
 import { Client } from 'pg';
 const client = new Client({
   database: DATABASE,
@@ -21,7 +21,7 @@ export async function up() {
           ) INTO _exists;
 
           IF NOT _exists THEN
-              CREATE TYPE order_status AS ENUM ('recebido', 'em preparação', 'pronto', 'finalizado');
+              CREATE TYPE order_status AS ENUM ('pagamento pendente', 'recebido', 'em preparação', 'pronto', 'finalizado');
           END IF;
       END $$;
     `,

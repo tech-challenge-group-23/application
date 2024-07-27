@@ -1,5 +1,4 @@
-import { NewOrderRequest, Order, OrderServiceResponse, UpdateOrderRequest } from "@/domain/entities/order"
-
+import { NewOrderRequest, OrderServiceResponse, Order, UpdateOrderRequest } from "@/restaurant-manager/domain/entities/order"
 
 export interface OrderServicePort {
     create(request: NewOrderRequest): Promise<OrderServiceResponse>

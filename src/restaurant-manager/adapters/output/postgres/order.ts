@@ -1,7 +1,8 @@
-import { OrderRepositoryPort } from "@/ports/postgres/order";
+import { TableName } from '@/restaurant-manager/ports/utils/enums';
 import { AppDataSource } from '..';
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-import { OrderItem, OrderStatus, OrderUpdateInfo, Order } from "@/domain/entities/order";
+import { OrderRepositoryPort } from '@/restaurant-manager/ports/postgres/order';
+import { Order, OrderItem, OrderStatus, OrderTable, OrderUpdateInfo } from '@/restaurant-manager/domain/entities/order';
 
 export class OrderRepository implements OrderRepositoryPort {
   private repository = AppDataSource.getRepository(OrderTable);
@@ -67,29 +68,78 @@ export class OrderRepository implements OrderRepositoryPort {
   async retrieveByFilters(orderStatus?: OrderStatus, customerId?: number): Promise<Order[] | null> {
 
     if (orderStatus && customerId) {
-      return await AppDataSource.createQueryBuilder()
-        .select('orders')
-        .from(Order, 'orders')
-        .where('orders.orderStatus = :orderStatus', { orderStatus: orderStatus })
-        .andWhere('orders.customerId = :customerId', { customerId: customerId })
-        .getMany();
+      var retriveredOrders = await AppDataSource.createQueryBuilder()
+      .select('orders')
+      .from(OrderTable, 'orders')
+      .where('orders.orderStatus = :orderStatus', { orderStatus: orderStatus })
+      .andWhere('orders.customerId = :customerId', { customerId: customerId })
+      .getMany();
+
+      var orders: Order[] = []
+      retriveredOrders.forEach(element => {
+        orders.push(new Order(
+          element.command,
+          element.orderStatus,
+          element.totalPrice,
+          element.items,
+          element.orderUpdatedAt,
+          element.createdAt,
+          element.customerId,
+          element.id
+        ))
+      });
+
+      return orders
     }
 
     if(orderStatus){
-      return await AppDataSource.createQueryBuilder()
+      var retriveredOrders = await AppDataSource.createQueryBuilder()
       .select('orders')
-        .from(Order, 'orders')
+        .from(OrderTable, 'orders')
         .where('orders.orderStatus = :orderStatus', { orderStatus: orderStatus })
         .getMany();
+
+      var orders: Order[] = []
+      retriveredOrders.forEach(element => {
+        orders.push(new Order(
+          element.command,
+          element.orderStatus,
+          element.totalPrice,
+          element.items,
+          element.orderUpdatedAt,
+          element.createdAt,
+          element.customerId,
+          element.id
+        ))
+      });
+
+      return orders
     }
 
     if(customerId){
-      return await AppDataSource.createQueryBuilder()
-        .select('orders')
-        .from(Order, 'orders')
-        .where('orders.customerId = :customerId', { customerId: customerId })
-        .getMany();
+      var retriveredOrders = await AppDataSource.createQueryBuilder()
+      .select('orders')
+      .from(OrderTable, 'orders')
+      .where('orders.customerId = :customerId', { customerId: customerId })
+      .getMany();
+
+      var orders: Order[] = []
+      retriveredOrders.forEach(element => {
+        orders.push(new Order(
+          element.command,
+          element.orderStatus,
+          element.totalPrice,
+          element.items,
+          element.orderUpdatedAt,
+          element.createdAt,
+          element.customerId,
+          element.id
+        ))
+      });
+
+      return orders
     }
+
     return null
   }
 
@@ -97,7 +147,7 @@ export class OrderRepository implements OrderRepositoryPort {
     try{
       await AppDataSource
       .createQueryBuilder()
-      .update(Order)
+      .update(OrderTable)
       .set({
         command: order.command,
         orderStatus: order.orderStatus,
@@ -113,33 +163,6 @@ export class OrderRepository implements OrderRepositoryPort {
     throw new Error(`Cannot update the order. Details: ${error}`)
     }
   }
-}
-
-@Entity({name: "orders"})
-class OrderTable {
-  @PrimaryGeneratedColumn()
-  id?: number;
-
-  @Column({ nullable: true })
-  customerId?: number;
-
-  @Column()
-  command!: number;
-
-  @Column({ type: 'enum', enum: OrderStatus })
-  orderStatus!: OrderStatus;
-
-  @Column('decimal', { precision: 10, scale: 2 })
-  totalPrice!: number;
-
-  @Column("jsonb")
-  items!: OrderItem[];
-
-  @Column("jsonb")
-  orderUpdatedAt!: OrderUpdateInfo[];
-
-  @Column()
-  createdAt!: Date;
 }
 
 export const provideOrderRepository = new OrderRepository();

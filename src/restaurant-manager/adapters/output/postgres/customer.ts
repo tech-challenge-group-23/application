@@ -1,11 +1,11 @@
-import { Customer } from '@/domain/entities/customer';
-import { CustomerRepositoryPort } from '@/ports/postgres/customer';
+import { TableName } from '@/restaurant-manager/ports/utils/enums';
 import { AppDataSource } from '..';
-import { TableName } from '@/ports/utils/enums';
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn } from 'typeorm';
+import { CustomerRepositoryPort } from '@/restaurant-manager/ports/postgres/customer';
+import { Customer } from '@/restaurant-manager/domain/entities/customer';
 
 @Entity({ name: TableName.CUSTOMER })
-class CustomerTable {
+export class CustomerTable {
   @PrimaryGeneratedColumn()
   id?: number;
 
@@ -45,6 +45,7 @@ export class CustomerRepository implements CustomerRepositoryPort {
 
       return customerRes
     } catch (error) {
+      console.log(error)
       if (error instanceof Error)
         throw new Error(`Error adding customer: ${error.message}`);
       throw new Error(`Error adding customer: ${error}`);
@@ -59,7 +60,7 @@ export class CustomerRepository implements CustomerRepositoryPort {
         .where('customers.cpf = :cpf', { cpf: paramCpf })
         .getOne();
 
-      if (searchCustomer?.cpf) {
+      if (searchCustomer == null) {
         return undefined;
       }
 
@@ -71,6 +72,7 @@ export class CustomerRepository implements CustomerRepositoryPort {
         searchCustomer!.id,
       )
     } catch (error) {
+      console.log(error)
       if (error instanceof Error) throw new Error(`Error when searching for cpf: ${error.message}`);
       throw new Error(`Error when searching for cpf: ${error}`);
     }
@@ -79,8 +81,7 @@ export class CustomerRepository implements CustomerRepositoryPort {
   async searchById(id: number): Promise<Customer | undefined> {
     const searchCustomer = await AppDataSource.getRepository(CustomerTable)
     .findOne({where: { id }})
-
-    if (searchCustomer?.cpf) {
+    if (searchCustomer === null) {
       return undefined;
     }
 

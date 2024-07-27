@@ -1,5 +1,4 @@
-import { Product, ProductServiceResponse } from '@/domain/entities/product';
-import { DefaultHttpResponse } from '../utils/response';
+import { Product, ProductServiceResponse } from "@/restaurant-manager/domain/entities/product";
 
 export interface ProductServicePort {
   create(product: Product): Promise<ProductServiceResponse>;
