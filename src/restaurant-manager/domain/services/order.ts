@@ -14,14 +14,18 @@ import { provideCustomerService } from './customer';
 import { CustomerServicePort } from '@/restaurant-manager/ports/services/customer';
 import { provideOrderRepository } from '@/restaurant-manager/adapters/output/postgres/order';
 import { OrderRepositoryPort } from '@/restaurant-manager/ports/postgres/order';
+import { MercadoPagoPort } from '@/restaurant-manager/ports/mercadopago';
+import { provideMercadoPago } from '@/restaurant-manager/adapters/output/mercadopago/mock';
 
 export class OrderService implements OrderServicePort {
   private orderRepository: OrderRepositoryPort;
   private customerService: CustomerServicePort;
+  private mercadoPago: MercadoPagoPort
 
   constructor() {
     this.orderRepository = provideOrderRepository;
     this.customerService = provideCustomerService;
+    this.mercadoPago = provideMercadoPago;
   }
 
   async create(request: NewOrderRequest): Promise<OrderServiceResponse> {
@@ -40,9 +44,13 @@ export class OrderService implements OrderServicePort {
 
       const result = await this.orderRepository.save(newOrder);
 
+      if (result.id) {
+        const qrCode = await this.mercadoPago.generateQRCode(result.id, result.totalPrice)
+        result.qrCode = qrCode
+      }
+
       return {
         order: result
-
       };
     } catch (error) {
       if (error instanceof Error)

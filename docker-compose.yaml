@@ -26,6 +26,7 @@ services:
       DATABASE_PASSWORD: admin123
       DATABASE_PORT: 5432
       DATABASE: tech_challenge
+      MERCADOPAGO_PORT: 3004
     command: sh -c 'pnpm i && pnpm migrate:up && pnpm dev'
     ports:
       - "8080:8080"
@@ -36,6 +37,14 @@ services:
     volumes:
       - .:/app
       - node_modules:/app/node_modules
+  mercadopago:
+    build: .
+    environment:
+      MERCADOPAGO_PORT: 3004
+    command: sh -c 'pnpm mock'
+    ports:
+      - "3004:3004"
+    working_dir: /app
 
 volumes:
   postgres:
