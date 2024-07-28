@@ -5,3 +5,4 @@ export const DATABASE_PASSWORD = process.env.DATABASE_PASSWORD;
 export const DATABASE_PORT = Number(process.env.DATABASE_PORT);
 export const DATABASE_USER = process.env.DATABASE_USER;
 export const MERCADOPAGO_PORT = Number(process.env.MERCADOPAGO_PORT);
+export const MERCADOPAGO_DNS = process.env.MERCADOPAGO_DNS;

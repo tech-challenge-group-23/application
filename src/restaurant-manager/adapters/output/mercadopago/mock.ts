@@ -1,11 +1,11 @@
 import { MercadoPagoPort } from '@/restaurant-manager/ports/mercadopago';
 import axios from 'axios';
-import { APP_PORT, DATABASE_PORT, MERCADOPAGO_PORT } from 'env';
+import { MERCADOPAGO_DNS, MERCADOPAGO_PORT } from 'env';
 
 export class MercadoPago implements MercadoPagoPort {
   async generateQRCode(orderID: number, totalPrice: number): Promise<string> {
     try {
-      const response = await axios.post(`http://mercadopago:${MERCADOPAGO_PORT}/qr-code`, {orderId: orderID, totalPrice: totalPrice}, {
+      const response = await axios.post(`http://${MERCADOPAGO_DNS}:${MERCADOPAGO_PORT}/qr-code`, {orderId: orderID, totalPrice: totalPrice}, {
         headers: {
             'Content-Type': 'application/json',
         },
