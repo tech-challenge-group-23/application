@@ -1,26 +1,55 @@
-# tech-challenge-fiap-group-23
+# Snack Bar System - Group 23
 
-This is an academic project developed for the postgraduate course in Software Architecture. It consists of a monolithic for managing customers, products, and orders for a small "lanchonete/ hamburgueria" ("snack bar").
-This solution uses Node.Js with typescript and PostgreSQL for storage.
+This is an academic project developed for the postgraduate [Software Architecture course](https://postech.fiap.com.br/curso/software-architecture/) in FIAP.
+
+The developed project is a microsservice solution for managing snack bars, aiming for a self-service solution for customers. This solution uses Node.Js with typescript and PostgreSQL for storage and the deployment and orchestration is managed by Docker and Kubernetes.
+
+## The Problem
+*There is a neighborhood snack bar that is expanding due to its great success. However, with the expansion and without an order control system, customer service can become chaotic and confusing. For example, imagine a customer places a complex order, such as a customized hamburger with specific ingredients, accompanied by fries and a drink. The attendant might write down the order on a piece of paper and deliver it to the kitchen, but there is no guarantee that the order will be prepared correctly.*
+
+*Without an order control system, there can be confusion between the attendants and the kitchen, resulting in delays in preparing and delivering orders. Orders may be lost, misinterpreted, or forgotten, leading to customer dissatisfaction and loss of business.*
+
+*In summary, an order control system is essential to ensure that the snack bar can efficiently serve customers by properly managing their orders and inventory. Without it, expanding the snack bar may not work out, resulting in dissatisfied customers and negatively impacting the business.*
+
+*To solve the problem, the snack bar will invest in a fast food self-service system, which consists of a series of devices and interfaces that allow customers to select and place orders without needing to interact with an attendant.*
+
+— Source: [FIAP](https://postech.fiap.com.br/curso/software-architecture)
 
 ## Architecture
-This project utilizes hexagonal architecture to isolate the application's models, domains, and business rules from the input and output interfaces and their specificities.
+This project utilizes hexagonal architecture following clean code standards
+to isolate the application's models, domains, and business rules from the input and output interfaces and their specificities.
+
+![Description of the image](images/clean-code.png)
+![Description of the image](images/architecture.png)
+
+- **adapters** represents the **frameworks & drivers**;
+- **domain/entities** represents the **enterprise business rules**;
+- **domain/services** represents the **application business rules**;
+- **ports** represents the **interface Adapters**.
+
+## Kubernetes infrastructure
+The entire infrastructure is configured in Docker Kubernetes. Containing scalability with increasing and decreasing Pods automatically.
+
+The order queue is controlled by the front-end, which should request the list of orders by status (waiting payment, received, in preparation, ready, and completed) and send a request to change the status as it progresses in the real world.
+
+Payment control is done via the webhook. The restaurant-api, when creating the order, sends order information to generate a payment QRCode on Mercadopago-api. When the payment is made, an event continues to be triggered in the weebhook queue that updates the payment status and sends it to the front-end.
 
 
-## Primary Operations
-- Customer: Create and query a customer (by ID or CPF)
-- Order: Create, edit status, and query orders (by ID, order status, or customer ID)
-- Product: Create, edit, delete, and query products (by category ID)
+![Description of the image](images/kubernetes-architecture.png)
 
-## Tecnical Decisions
-This delivery can be seen as an MVP where issues of scale, concurrency, and other critical scenarios have been disregarded. It is a simple implementation aimed at serving a small business, with only one instance of the application.
 
-The order queue is controlled by the front-end, which should request the list of orders by status (received, in preparation, ready, and completed) and send a request to change the status as it progresses in the real world.
+## Demonstration video
+
+youtube.link
+
+## Requirements
+- Docker Desktop v25.0.3;
+- Node.js v20.13.0;
+- Kubernetes v1.29.1.
 
 ## Getting Started
-
 ### Docker
-1. Run this command in root directory to build and run the app:
+1. Run this command in root directory to build and run the apps:
 
 ```bash
 docker-compose up
@@ -35,56 +64,13 @@ docker-compose up
 ```bash
 docker-compose down
 ```
-
-
-### Local
-1. make sure you're using node version 20+. if you don't, we recommend you install it from nvm where you can follow installation guide here: https://github.com/nvm-sh/nvm
-
-
-2. Create a file named `.env.docker-dev` in root directory with the follow content:
+### Kubernetes
+1. Run this command in root directory to build and run the apps:
 
 ```bash
-APP_PORT=8080
-DATABASE_HOST=postgres
-DATABASE_USER=postgres
-DATABASE_PASSWORD=admin123
-DATABASE_PORT=5432
-DATABASE=tech_challenge
+kubectl apply -f deployments/
 ```
 
-3 install pnpm on your machine
+2. The aplication will be running on port: `30001`
 
-```bash
-npm i -g pnpm
-```
-
-4. install the project dependencies
-
-```bash
-pnpm install
-```
-
-5. if is your first time running the project, run the following command
-
-```bash
-pnpm migrate:up
-```
-
-this command creates the database and run all database scripts as create table and CRUD operations
-
-6. run the project
-  a.  Develop enviroment:
-
-```bash
-pnpm dev
-```
-
-  b.  Production enviroment:
-
-```bash
-pnpm build
-```
-
-if everything goes well you will see in the terminal the log running on port: `8080`
-
-7. To access swagger and test the endpoint, use the route `/api-docs` (http://localhost:8080/api-docs)
+3. To access swagger and test the endpoint, use the route `/api-docs` (http://localhost:30001/api-docs)
