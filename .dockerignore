@@ -1,2 +1,5 @@
 node_modules/
 dist/
+.migrate
+.git
+uploads/
