@@ -7,4 +7,5 @@ export interface OrderServicePort {
     updateStatus(request: UpdateOrderRequest): Promise<void>
     findOrdersIDOpenPayments(): Promise<number[]>
     findAllOrders(): Promise<Order[]>
+    updatePaymentStatus(paymentId: string): Promise<void>
 }

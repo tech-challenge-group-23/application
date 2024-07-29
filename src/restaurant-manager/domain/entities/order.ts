@@ -46,7 +46,7 @@ export type UpdateOrderRequest = {
 export class Order {
    id?: number;
    customerId?: number;
-   paymentId?: number;
+   paymentId?: string;
    command: number;
    orderStatus: OrderStatus;
    totalPrice: number;
@@ -65,7 +65,7 @@ export class Order {
     customerId?: number,
     id?: number,
     qrCode?: string,
-    paymentId?: number
+    paymentId?: string
   ) {
     this.id = id;
     this.customerId = customerId;
@@ -124,6 +124,16 @@ export function validateOrderStatus(status?: string): string[] {
   return errors;
 }
 
+export function validatePaymentStatus(status?: string): string[] {
+  const errors: string[] = [];
+
+  if (status == null) {
+    errors.push('paymentId is mandatory');
+  }
+
+  return errors;
+}
+
 export function isOrderStatus(status: string): boolean {
   return Object.values(OrderStatus).includes(status as OrderStatus);
 }
@@ -144,8 +154,8 @@ export class OrderTable {
   @Column({ nullable: true })
   customerId?: number;
 
-  @Column({ nullable: false })
-  paymentId?: number;
+  @Column({ name: 'paymentId', nullable: false })
+  paymentId?: string;
 
   @Column()
   command!: number;

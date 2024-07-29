@@ -1,4 +1,4 @@
 export type Payment = {
-  id: number;
+  id: string;
   qrCode: string;
 }

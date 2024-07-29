@@ -447,6 +447,41 @@
           }
         }
       }
+    },
+    "/orders/{id}/payment-status": {
+      "put": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "Returns the order status change. Based in payment_id",
+        "description": "This endpoint will be used to weebhook. When Mercadopago-api sends the event to the webhook, the webhook will fire to this route. Updating the order status to received, as payment has been approved.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
     }
   },
   "components": {

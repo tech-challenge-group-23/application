@@ -14,3 +14,5 @@ orderRoutes.get("/:id", (req: Request, res: Response) => { provideOrderControlle
 orderRoutes.post("/", (req: Request, res: Response) => { provideOrderController.createOrder(req, res) });
 
 orderRoutes.put("/:id/status", (req: Request, res: Response) => { provideOrderController.updateStatus(req, res) });
+
+orderRoutes.put("/:id/payment-status", (req: Request, res: Response) => { provideOrderController.updatePaymentStatus(req, res) });

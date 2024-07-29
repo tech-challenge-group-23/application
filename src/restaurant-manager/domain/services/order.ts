@@ -102,6 +102,14 @@ async getById(orderId: number): Promise<Order | null> {
     }
   }
 
+  async updatePaymentStatus(paymentId: string): Promise<void> {
+    try {
+      await this.orderRepository.updatePayment(paymentId);
+    } catch (error) {
+      throw new Error(`Error in update order's status: ${error}`);
+    }
+  }
+
   private generateNewOrder(orderRequest: NewOrderRequest): Order {
     const orderStatusEnum = this.getOrderStatus(orderRequest.order_status);
 

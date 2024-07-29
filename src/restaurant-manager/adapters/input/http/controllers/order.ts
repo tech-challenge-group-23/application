@@ -1,4 +1,4 @@
-import { UpdateOrderRequest, validateOrderStatus } from '@/restaurant-manager/domain/entities/order';
+import { UpdateOrderRequest, validateOrderStatus, validatePaymentStatus } from '@/restaurant-manager/domain/entities/order';
 import { provideOrderService } from '@/restaurant-manager/domain/services/order';
 import { OrderControllerPort } from '@/restaurant-manager/ports/controllers/order';
 import { OrderServicePort } from '@/restaurant-manager/ports/services/order';
@@ -106,6 +106,24 @@ export class OrderController implements OrderControllerPort {
     } catch (error) {
       console.error('Error fetching orders:', error);
       return res.status(500).send('Internal Server Error');
+    }
+  }
+
+  async updatePaymentStatus(req: Request, res: Response): Promise<Response> {
+    try {
+      const paymentId = req.params.id
+
+      const validationError = validatePaymentStatus(paymentId);
+
+      if (validationError.length > 0) {
+        return res.status(400).json({ messages: validationError });
+      }
+
+      await this.orderService.updatePaymentStatus(paymentId);
+      return res.status(200).send({ message: 'Payment status was updated' });
+    } catch (error) {
+      console.error('Error updating payment:', error);
+      return res.status(500).send({ message: 'Internal Server Error' });
     }
   }
 }
