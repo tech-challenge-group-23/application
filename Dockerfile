@@ -7,4 +7,4 @@ RUN pnpm install
 COPY . .
 RUN pnpm build
 EXPOSE 8080
-CMD ["sh", "-c", "pnpm i && pnpm migrate:up && pnpm dev"]
+CMD ["sh", "-c", "pnpm webhook"]

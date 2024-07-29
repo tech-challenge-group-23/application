@@ -15,7 +15,7 @@ services:
       interval: 10s
       timeout: 3s
       retries: 3
-  node_app:
+  restaurant-api:
     build:
       context: .
       dockerfile: Dockerfile
@@ -26,8 +26,7 @@ services:
       DATABASE_PASSWORD: admin123
       DATABASE_PORT: 5432
       DATABASE: tech_challenge
-      MERCADOPAGO_PORT: 3004
-      MERCADOPAGO_DNS: mercadopago
+      MERCADOPAGO_URL: http://mercadopago:3004
     ports:
       - "8080:8080"
     depends_on:
@@ -41,7 +40,7 @@ services:
     build: .
     environment:
       MERCADOPAGO_PORT: 3004
-      WEBHOOK_API_URL: 'http://localhost:9002'
+      WEBHOOK_API_URL: 'http://webhook:9002'
     command: sh -c 'pnpm mercadopago'
     ports:
       - "3004:3004"
@@ -49,7 +48,7 @@ services:
   webhook:
     build: .
     environment:
-      RESTAURANT_API_URL: 'http://localhost:8080'
+      RESTAURANT_API_URL: 'http://restaurant-api:8080'
       WEBHOOK_PORT: 9002
     command: sh -c 'pnpm webhook'
     ports:

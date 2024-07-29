@@ -11,9 +11,9 @@ export class PaymentStatusController implements PaymentStatusControllerPort {
   }
 
   async updatePaymentStatus(req: Request, res: Response): Promise<Response> {
-    const paymentId = req.body.id;
-
     try {
+      const paymentId = req.body.id;
+
       await this.providePaymentStatusService.updatePaymentStatus(paymentId)
 
       return res.status(200).send({ message: 'order status updated sucessfully' });
