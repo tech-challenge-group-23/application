@@ -11,8 +11,7 @@ data:
   DATABASE_PASSWORD: admin123
   DATABASE_PORT: "5432"
   DATABASE: postgres
-  MERCADOPAGO_PORT: "3004"
-  MERCADOPAGO_DNS: "mercadopago-api-clusterip.default.svc.cluster.local"
+  MERCADOPAGO_URL: "http://mercadopago-api-clusterip.default.svc.cluster.local:3004"
 ---
 apiVersion: apps/v1
 kind: Deployment

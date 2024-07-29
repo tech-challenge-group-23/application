@@ -6,8 +6,9 @@ import { WEBHOOK_API_URL } from "env";
 class Webhook  implements WebhookPort {
   async confirmPayment(paymentId: string) {
     try {
-      await axios.post(`${WEBHOOK_API_URL}/confirm-payment`, { paymentId })
-    } catch {
+      await axios.post(`${WEBHOOK_API_URL}/confirm-payment`, { id: paymentId })
+    } catch (error) {
+      console.log(error)
       throw new Error('Failed to confirm payment')
     }
   }
