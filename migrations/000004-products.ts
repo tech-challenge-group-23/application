@@ -18,16 +18,10 @@ export async function up() {
     price NUMERIC(10,2) NOT NULL,
     image BYTEA,
     created_at TIMESTAMP WITH TIME ZONE,
-    updated_at TIMESTAMP WITH TIME ZONE
+    updated_at TIMESTAMP WITH TIME ZONE,
+    FOREIGN KEY (category_id) REFERENCES product_category(id)
 );
 `);
-
-  await client.query(`ALTER TABLE IF EXISTS products
-    ADD FOREIGN KEY (category_id)
-    REFERENCES product_category (id) MATCH SIMPLE
-    ON UPDATE NO ACTION
-    ON DELETE NO ACTION
-    NOT VALID;`);
 
   await client.end();
 }

@@ -1,8 +1,6 @@
-import { TableName } from '@/restaurant-manager/ports/utils/enums';
 import { AppDataSource } from '..';
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 import { OrderRepositoryPort } from '@/restaurant-manager/ports/postgres/order';
-import { Order, OrderItem, OrderStatus, OrderTable, OrderUpdateInfo } from '@/restaurant-manager/domain/entities/order';
+import { Order, OrderStatus, OrderTable } from '@/restaurant-manager/domain/entities/order';
 
 export class OrderRepository implements OrderRepositoryPort {
   private repository = AppDataSource.getRepository(OrderTable);
@@ -14,15 +12,18 @@ export class OrderRepository implements OrderRepositoryPort {
       .insert()
       .into(OrderTable)
       .values([
-        { customerId: order.customerId,
+        {
+          customerId: order.customerId,
+          paymentId: order.paymentId,
           command: order.command,
           orderStatus: order.orderStatus,
           totalPrice: order.totalPrice,
           items: order.items,
           orderUpdatedAt: order.orderUpdatedAt,
-          createdAt: order.createdAt}
+          createdAt: order.createdAt
+        }
       ])
-      .returning(['id', 'customerId', 'command', 'orderStatus', 'totalPrice', 'items', 'orderUpdatedAt', 'createdAt' ])
+      .returning(['id', 'customerId', 'paymentId','command', 'orderStatus', 'totalPrice', 'items', 'orderUpdatedAt', 'createdAt' ])
       .execute()
 
       const orderRes = new Order(
@@ -34,6 +35,8 @@ export class OrderRepository implements OrderRepositoryPort {
         insertOrder.raw[0].createdAt,
         insertOrder.raw[0].customerId,
         insertOrder.raw[0].id,
+        order.qrCode,
+        insertOrder.raw[0].paymentId
       )
 
       return orderRes

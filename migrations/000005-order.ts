@@ -30,21 +30,16 @@ export async function up() {
   (
       id bigserial NOT NULL,
       customer_id bigint,
+      payment_id bigint,
       command smallint NOT NULL,
       order_status order_status NOT NULL,
       total_price numeric NOT NULL,
       items jsonb NOT NULL,
       order_updated_at jsonb NOT NULL,
       created_at timestamp with time zone DEFAULT now(),
-      PRIMARY KEY (id)
+      PRIMARY KEY (id),
+      FOREIGN KEY (customer_id) REFERENCES customers(id)
   );`);
-
-  await client.query(`ALTER TABLE IF EXISTS "orders"
-    ADD FOREIGN KEY (customer_id)
-    REFERENCES customers (id) MATCH SIMPLE
-    ON UPDATE NO ACTION
-    ON DELETE NO ACTION
-    NOT VALID;`);
 
   await client.end();
 }

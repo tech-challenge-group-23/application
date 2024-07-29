@@ -42,12 +42,11 @@ export class OrderService implements OrderServicePort {
         };
       }
 
-      const result = await this.orderRepository.save(newOrder);
+      const payment = await this.mercadoPago.generatePayment(newOrder.totalPrice)
+      newOrder.paymentId = payment.id
+      newOrder.qrCode = payment.qrCode
 
-      if (result.id) {
-        const qrCode = await this.mercadoPago.generateQRCode(result.id, result.totalPrice)
-        result.qrCode = qrCode
-      }
+      const result = await this.orderRepository.save(newOrder);
 
       return {
         order: result
@@ -105,6 +104,8 @@ async getById(orderId: number): Promise<Order | null> {
 
   private generateNewOrder(orderRequest: NewOrderRequest): Order {
     const orderStatusEnum = this.getOrderStatus(orderRequest.order_status);
+
+
 
     const order = new Order(
       orderRequest.command,

@@ -46,6 +46,7 @@ export type UpdateOrderRequest = {
 export class Order {
    id?: number;
    customerId?: number;
+   paymentId?: number;
    command: number;
    orderStatus: OrderStatus;
    totalPrice: number;
@@ -64,6 +65,7 @@ export class Order {
     customerId?: number,
     id?: number,
     qrCode?: string,
+    paymentId?: number
   ) {
     this.id = id;
     this.customerId = customerId;
@@ -74,6 +76,7 @@ export class Order {
     this.orderUpdatedAt = orderUpdatedAt;
     this.createdAt = createdAt;
     this.qrCode = qrCode;
+    this.paymentId = paymentId
   }
 
   validateOrderRequest(request: NewOrderRequest, isCustomer: boolean): string[] {
@@ -140,6 +143,9 @@ export class OrderTable {
 
   @Column({ nullable: true })
   customerId?: number;
+
+  @Column({ nullable: false })
+  paymentId?: number;
 
   @Column()
   command!: number;
