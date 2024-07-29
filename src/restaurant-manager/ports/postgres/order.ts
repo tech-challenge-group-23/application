@@ -7,4 +7,5 @@ export interface OrderRepositoryPort {
   update(order: Order): Promise<void>
   retrieveOrdersIDByOpenPayments(): Promise<number[]>
   retrieveAllOrders(): Promise<Order[]>
+  updatePayment(paymentId: string): Promise<void>
 }

@@ -241,6 +241,23 @@ export class OrderRepository implements OrderRepositoryPort {
     throw new Error(`Cannot update the order. Details: ${error}`)
     }
   }
+
+  async updatePayment(paymentId: string): Promise<void> {
+    try{
+      await AppDataSource
+      .createQueryBuilder()
+      .update(OrderTable)
+      .set({
+        orderStatus: OrderStatus.Received })
+        .where('paymentId = :paymentId', { paymentId: paymentId })
+        .execute();
+
+    } catch(error) {
+      if(error instanceof Error)
+        throw new Error(`Cannot update the order. Details: ${error.message}`)
+    throw new Error(`Cannot update the order. Details: ${error}`)
+    }
+  }
 }
 
 export const provideOrderRepository = new OrderRepository();

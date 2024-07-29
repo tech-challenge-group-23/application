@@ -30,7 +30,7 @@ export async function up() {
   (
       id bigserial NOT NULL,
       customer_id bigint,
-      payment_id bigint,
+      payment_id text,
       command smallint NOT NULL,
       order_status order_status NOT NULL,
       total_price numeric NOT NULL,
