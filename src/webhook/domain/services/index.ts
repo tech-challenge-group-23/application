@@ -1,10 +1,17 @@
+import { provideRestaurantApi } from "@/webhook/adapters/output/restaurant-api";
+import { RestaurantApiPort } from "@/webhook/ports/restaurant-api/restaurant-api";
 import { PaymentStatusServicePort } from "@/webhook/ports/services";
-import axios, { AxiosResponse } from "axios";
-import { RESTAURANT_API_URL } from "env";
+import { AxiosResponse } from "axios";
 
 class PaymentStatusService implements PaymentStatusServicePort {
-  updateOrderStatus(orderId: number): Promise<AxiosResponse> {
-     return axios.put(`${RESTAURANT_API_URL}/orders/${orderId}/status`, { order_status: 'recebido' })
+  private provideRestaurantApi: RestaurantApiPort
+
+  constructor(){
+    this.provideRestaurantApi =  provideRestaurantApi
+  }
+
+  updatePaymentStatus(paymentId: string): Promise<AxiosResponse> {
+    return this.provideRestaurantApi.updatePaymentStatus(paymentId);
   }
 }
 

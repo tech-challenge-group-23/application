@@ -11,25 +11,24 @@ export class PaymentController implements PaymentControllerPort {
   }
 
   async generatePaymentOrder(req: Request, res: Response): Promise<Response> {
-    const orderId = Number(req.body.orderId);
     const totalPrice = Number(req.body.totalPrice);
 
-    const qrData = await this.paymentOrderService.generate(orderId, totalPrice);
+    const response = await this.paymentOrderService.generate(totalPrice);
 
-    return res.status(200).send({ qr_data: qrData })
+    return res.status(200).send(response)
   }
 
   async confirmPayment(req: Request, res: Response): Promise<any> {
-    const orderId = Number(req.params.id)
+    const paymentId = req.params.id
 
-    await this.paymentOrderService.confirmPayment(orderId)
+    await this.paymentOrderService.confirmPayment(paymentId)
 
     return res.status(200).send({ message: 'success' })
   }
 
   async verifyPaymentOrder(req: Request, res: Response): Promise<Response> {
-    const orderId = Number(req.params.orderId);
-    const paymentOrder = await this.paymentOrderService.verify(orderId)
+    const paymentId = req.params.id;
+    const paymentOrder = await this.paymentOrderService.verify(paymentId)
 
     return res.status(200).send(paymentOrder)
   }

@@ -1,5 +1,5 @@
 import { AxiosResponse } from "axios";
 
-export interface PaymentStatusServicePort {
+export interface RestaurantApiPort {
   updatePaymentStatus(paymentId: string): Promise<AxiosResponse>
 }
