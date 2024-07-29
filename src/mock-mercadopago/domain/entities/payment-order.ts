@@ -9,4 +9,3 @@ export class PaymentOrder {
     this.paymentStatus = paymentStatus
   }
 }
-
