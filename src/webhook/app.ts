@@ -10,7 +10,7 @@ app.use(express.json());
 app.use(cors());
 app.use(morgan(':method :url :status :response-time ms - :res[content-length]'));
 
-app.use('/payment-status', paymentStatusRoute);
+app.use('/confirm-payment', paymentStatusRoute);
 
 app.listen(WEBHOOK_PORT, () => {
   console.log('running on: ', `http://localhost:${WEBHOOK_PORT}`);

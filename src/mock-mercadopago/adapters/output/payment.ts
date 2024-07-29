@@ -4,17 +4,17 @@ import { PaymentOrder } from "@/mock-mercadopago/domain/entities/payment-order";
 
 
 class PaymentOrderRepository implements PaymentOrderRepositoryPort{
-  confirm(orderId: number): Promise<void> {
+  confirm(paymentId: string): Promise<void> {
     database.forEach((paymentOrder) => {
-      if (paymentOrder.id === orderId) {
+      if (paymentOrder.id === paymentId) {
         paymentOrder.paymentStatus = true
       }
     })
 
     return new Promise((resolve) => resolve())
   }
-  getById(id: number): Promise<PaymentOrder> {
-    const paymentOrder = database.filter((paymentOrder) => paymentOrder.id === id)
+  getById(paymentId: string): Promise<PaymentOrder> {
+    const paymentOrder = database.filter((paymentOrder) => paymentOrder.id === paymentId)
 
     return new Promise((resolve) => setTimeout(() => resolve(paymentOrder as unknown as PaymentOrder), 1000));
   }
