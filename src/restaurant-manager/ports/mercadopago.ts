@@ -1,3 +1,5 @@
+import { Payment } from "../domain/entities/payment";
+
 export interface MercadoPagoPort {
-    generateQRCode(orderID: number, totalPrice: number): Promise<string>
+    generatePayment(totalPrice: number): Promise<Payment>
 }
