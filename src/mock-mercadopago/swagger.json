@@ -1,0 +1,164 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "API - Mock Mercadopago",
+    "description": "API - Mock Mercadopago"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:30001",
+      "description": "Address running in Kubernetes"
+    },
+    {
+      "url": "http://localhost:9002",
+      "description": "Address running in Docker/localhost"
+    }
+  ],
+  "paths": {
+    "/qr-code": {
+      "post": {
+        "tags": [
+          "Payment"
+        ],
+        "summary": "Create a qr-code string to and generate the payment id",
+        "description": "This endpoint will return qr-code and payment id",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "totalPrice": {
+                    "type": "integer",
+                    "example": 12.20
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "qrData": {
+                      "type": "string",
+                      "example": "00020101021243650016COM.MERCADOLIBRE02013063638f1192a-5fd1-4180-a180-8bcae3556bc35204000053039865802BR5925IZABEL AAAA DE MELO6007BARUERI62070503***63040B6D"
+                    },
+                    "payment_id": {
+                      "type": "string",
+                      "example": "817187be-6998-4c6e-a55e-f2195ec7d732"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ]
+        }
+      }
+    },
+    "/payment-status/{id}": {
+      "get": {
+        "tags": [
+          "Payment"
+        ],
+        "summary": "Returns the payment",
+        "description": "Returns the payment information for the requested id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "817187be-6998-4c6e-a55e-f2195ec7d732"
+                    },
+                    "qrData": {
+                      "type": "string",
+                      "example": "00020101021243650016COM.MERCADOLIBRE02013063638f1192a-5fd1-4180-a180-8bcae3556bc35204000053039865802BR5925IZABEL AAAA DE MELO6007BARUERI62070503***63040B6D"
+                    },
+                    "paymentStatus": {
+                      "type": "boolean",
+                      "example": false
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/confirm-payment/{id}": {
+      "put": {
+        "tags": [
+          "Payment"
+        ],
+        "summary": "endpoint to confirm the payment",
+        "description": "endpoint to manually confirm the payment and update the mock database",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "success"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    }
+  }
+}

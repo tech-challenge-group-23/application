@@ -160,7 +160,9 @@
         ]
       },
       "put": {
-        "tags": ["Product"],
+        "tags": [
+          "Product"
+        ],
         "summary": "Edit product.",
         "description": "This endpoint will edit the product with values of body request.",
         "parameters": [
@@ -316,8 +318,7 @@
         ],
         "summary": "Returns the orders IDs with waiting payment status to weebhook check",
         "description": "Returns all orders IDs that have payment status open",
-        "parameters": [
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
@@ -346,8 +347,7 @@
         ],
         "summary": "Returns orders in a specific order",
         "description": "Returns an order list orderned by asceding date and Pronto, Em preparação, Recebido status. Without Finalizado status",
-        "parameters": [
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"

@@ -1,0 +1,83 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "API - Webhook",
+    "description": "API - Webhook triggers update the payment status at restaurant manager when the mercadopago triggers the webhook"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:30001",
+      "description": "Address running in Kubernetes"
+    },
+    {
+      "url": "http://localhost:3003",
+      "description": "Address running in Docker/localhost"
+    }
+  ],
+  "paths": {
+    "/confirm-payment": {
+      "post": {
+        "tags": [
+          "Payment"
+        ],
+        "summary": "Update the payment status for restaurant manager",
+        "description": "Update the payment status for restaurant manager",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "example": "817187be-6998-4c6e-a55e-f2195ec7d732"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "order status updated sucessfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ]
+        }
+      }
+    }
+  }
+}
