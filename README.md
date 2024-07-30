@@ -37,7 +37,7 @@ Payment flow is done via Mercadopago. The restaurant API, when creating the orde
 ## Kubernetes infrastructure
 The entire infrastructure is configured in Docker Kubernetes. Containing scalability with increasing and decreasing Pods automatically.
 
-![Description of the image](images/kubernetes-architecture.png)
+![Description of the image](images/kubernetes-architecture-final.png)
 
 
 ## Demonstration video
