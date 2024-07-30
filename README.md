@@ -27,13 +27,15 @@ to isolate the application's models, domains, and business rules from the input 
 - **domain/services** represents the **application business rules**;
 - **ports** represents the **interface Adapters**.
 
+## Architecture drawing
+A representation of the architectural design. one of the flows that communicates with all image services is the payment flow.
+
+Payment flow is done via Mercadopago. The restaurant API, when creating the order, sends the information to Mercadopago which generates a QRCode and payment ID. When the payment is made, Mercadopago triggers an event to the weebhook with the payment ID paid, the webhook makes a request to the restaurant api that updates the order status to received based on the payment ID.
+
+![Description of the image](images/architecture-draw.png)
+
 ## Kubernetes infrastructure
 The entire infrastructure is configured in Docker Kubernetes. Containing scalability with increasing and decreasing Pods automatically.
-
-The order queue is controlled by the front-end, which should request the list of orders by status (waiting payment, received, in preparation, ready, and completed) and send a request to change the status as it progresses in the real world.
-
-Payment control is done via the webhook. The restaurant-api, when creating the order, sends order information to generate a payment QRCode on Mercadopago-api. When the payment is made, an event continues to be triggered in the weebhook queue that updates the payment status and sends it to the front-end.
-
 
 ![Description of the image](images/kubernetes-architecture.png)
 
