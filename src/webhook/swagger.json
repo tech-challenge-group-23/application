@@ -7,11 +7,11 @@
   },
   "servers": [
     {
-      "url": "http://localhost:30001",
+      "url": "http://localhost:30004",
       "description": "Address running in Kubernetes"
     },
     {
-      "url": "http://localhost:3003",
+      "url": "http://localhost:9002",
       "description": "Address running in Docker/localhost"
     }
   ],
