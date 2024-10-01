@@ -51,7 +51,6 @@ jobs:
           sudo apt-get install -y docker-compose
 
       - name: build images
-        working-directory: ./application
         run: docker build -f ../../Dockerfile .
 
 
