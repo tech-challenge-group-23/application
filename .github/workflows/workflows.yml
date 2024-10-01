@@ -51,7 +51,6 @@ jobs:
           sudo apt-get install -y docker-compose
 
       - name: Start containers
-        working-directory: ./application
         run: docker-compose up -d --build
 
 
@@ -65,5 +64,4 @@ jobs:
 
       - name:  Stop containers
         if: always()
-        working-directory: ./application
         run: docker-compose down
