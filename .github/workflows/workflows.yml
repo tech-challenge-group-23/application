@@ -51,7 +51,8 @@ jobs:
           sudo apt-get install -y docker-compose
 
       - name: Start containers
-        run: docker-compose -f "../../docker-compose.yaml" up -d --build
+        working-directory: ./application
+        run: docker-compose up -d --build
 
 
       - name: Install node
@@ -64,4 +65,5 @@ jobs:
 
       - name:  Stop containers
         if: always()
-        run: docker-compose -f "docker-compose.yml" down
+        working-directory: ./application
+        run: docker-compose down
