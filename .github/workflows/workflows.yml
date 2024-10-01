@@ -1,4 +1,4 @@
-name: SonarCloud analysis
+name: Analysis
 
 on:
   push:
@@ -25,3 +25,11 @@ jobs:
             -Dsonar.projectKey=tech-challenge-group-23_application
             -Dsonar.organization=tech-challenge-group-23
           projectBaseDir: .
+  images:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: build images
+        run: docker build . --file Dockerfile
