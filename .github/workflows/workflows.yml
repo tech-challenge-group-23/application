@@ -25,7 +25,7 @@ jobs:
             -Dsonar.projectKey=tech-challenge-group-23_application
             -Dsonar.organization=tech-challenge-group-23
           projectBaseDir: .
-  docker:
+  images:
     timeout-minutes: 10
     runs-on: ubuntu-latest
 
